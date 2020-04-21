@@ -1,4 +1,6 @@
-**Initial Proposal**
+# Meeting 1 Notes (April 21)
+
+## Initial Proposal
 1. What to do: research on Frame Interpolation and a demo - Lin 
     - description
     - diagram
@@ -13,11 +15,11 @@
     - compared with other works 
 6. Risk - Wang 
 
-**Schedule**
+## Schedule
 - April 23 2:00 pm: Ini proposal 
 - April 30: Research paper presentation / Finish Chap 6 10 11 
 
-**Resources**
+## Resources
 1. 极客湾视频
     - [用AI把24帧动画重制到超清60帧，突破次元壁！丝滑流畅……](https://www.youtube.com/watch?v=lahPKUJEhHU&feature=youtu.be)
     - [玩游戏为何要60帧才流畅，电影却只需24帧？](https://www.youtube.com/watch?v=--OKrYxOb6Y)
