@@ -35,3 +35,5 @@
     - [List of datasets for machine-learning research](https://en.wikipedia.org/wiki/List_of_datasets_for_machine-learning_research#Action_recognition)
 5. Git Instructions
     - [小姐姐用动画图解 Git 命令，这也太秀了吧？！](https://zhuanlan.zhihu.com/p/129854679?utm_source=wechat_timeline&utm_medium=social&utm_oi=1089612215040012288&from=timeline&isappinstalled=0)
+6. Research Guide
+    - [More Deep Learning Papers for Video Frame Interpolation](https://heartbeat.fritz.ai/research-guide-for-video-frame-interpolation-with-deep-learning-519ab2eb3dda)
