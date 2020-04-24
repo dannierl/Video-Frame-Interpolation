@@ -42,12 +42,16 @@ The metrics used for the evaluation consist of quantitative and qualitative comp
 - Quantitative Comparisons:
 
   - model parameters
-- runtime
-  - MAE: Mean squared error
-- RMSE: Root-mean-square error, the square root of the mean squared error
-  - PSNR: Peak signal-to-noise ratio, the ratio between the maximum possible power of a signal and the power of corrupting noise that affects the fidelity of its representation.
-- SSIM: Structural similarity (SSIM) index is a method for predicting the perceived quality of various kinds of digital images and video. It is used for measuring the similarity between two images.
   
+  - runtime
+  
+  - MAE: Mean squared error
+  
+  - RMSE: Root-mean-square error, the square root of the mean squared error
+  
+  - PSNR: Peak signal-to-noise ratio, the ratio between the maximum possible power of a signal and the power of corrupting noise that affects the fidelity of its representation.
+  
+  - SSIM: Structural similarity (SSIM) index is a method for predicting the perceived quality of various kinds of digital images and video. It is used for measuring the similarity between two images.
 - Qualitative Comparisons:
   Visual comparison based the image quality like the clear shape and the restored details.
 
