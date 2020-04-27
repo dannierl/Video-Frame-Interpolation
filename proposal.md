@@ -12,9 +12,11 @@
     - research paper 
     - dataset 
     - env/demo (implementation) 
+    - results analasys
 There are several steps towards making the project. First, We are going to read some related articles and look into previous works on video frame interpolation. We are currently working on bring tradition video coding algorithms into this project, and adapt them into machine learning algorithms. Then, we can decide which approach we are going to take to prediction inter-frame images.  
 Second, we need to decide which dataset we are going to use to train and test the neural network. Since we plan to convert lower FPS videos to 60FPS or 90FPS, we need to find some native 60FPS and 90 FPS video or corresponding picture frames.  
-Finally, we are going to implement our method and develop a demo for quantitative analysis and class presentation. At this moment, we decide to build the project using Keras library on Ubuntu 18.04. 
+In addition, we are going to implement our method and develop a demo for quantitative analysis and class presentation. At this moment, we decide to build the project using Keras library on Ubuntu 18.04.  
+Finally, we will run own experiment demo againt exsting project/research, such as Sepconv Slomo. Mstrics including MSE, RMSE, PSNR, and SSIM will be used to quantify the results and evaluate the performance.
  
 
 ## Schedule
@@ -62,7 +64,7 @@ The metrics used for the evaluation consist of quantitative and qualitative comp
   
   - runtime
   
-  - MAE: Mean squared error
+  - MSE: Mean squared error
   
   - RMSE: Root-mean-square error, the square root of the mean squared error
   
