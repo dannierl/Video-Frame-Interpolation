@@ -8,16 +8,7 @@
 
 ## How it is related to Deep Learning for CV ...  - Qiming 
 
-With the continuous success of deep learning in the computer field, researchers have tried to combine deep learning with video insertion technology to meet the needs of insertion. Video super-resolution technology is more complicated, not only needs to generate a detailed frame image but also maintain the continuity between images. The principle of this work is to add additional picture frames between two adjacent frames.
-
-To eliminate the frustration in the picture, intelligently generate interpolated frames, and reproduce 24 frames/second or 25 frames/second video to 60 frames/ second or 90 frames/second video. Frequency interpolation frame technology refers to the use of related information between adjacent frames in the video.
-
-Given the input frame at two moments. First, estimate the optical flow and depth map, and then use the proposed depth-aware flow projection layer to generate the intermediate flow. Then, the model warps the input frame, depth map, and context features based on optical flow and local interpolation kernel to synthesize the output frame.
-
-
-
-//not sure about mentioning self-supervised or weakly supervised methods
-//besides CNN, what else needs to be mentioned in this section?
+With the continuous success of deep learning in the computer field, researchers have tried to combine deep learning with video interpolation technology to meet the needs of coherent video. We design a convolutional neural network to estimate a proper convolutional kernel to synthesize each output pixel in the interpolated images. Our method captures both the motion and interpolation coefficients and uses these kernels to directly convolve with input images to synthesize a middle video frame. Our neural network can be trained end to end using widely available video data, which provides a sufficiently large training dataset. 
 
 
 ## Steps: - Daniel 
