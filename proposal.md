@@ -48,7 +48,8 @@ For the project schedule, we have planned the following dates and events at this
 
 
 ## Results and Metrics
-
+    - results: 24/25 -> 60, -> 90
+    - compared with other works  
 ### Results:
 We use our interpolation model to process the input videos with frame rate 24/25 fps to generate new videos with increased frame rate 60 and 90 fps. And the input videos are from a wide variety of video datasets with different resolutions.
 
@@ -59,8 +60,6 @@ We use our interpolation model to process the input videos with frame rate 24/25
 3. HD
 
 4. Middlebury dataset
-    - results: 24/25 -> 60, -> 90
-    - compared with other works  
 
 ### Evaluation and Metrics:
 To evaluate our interpolation model, the result videos are compared with other methods:
