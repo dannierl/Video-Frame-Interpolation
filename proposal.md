@@ -24,14 +24,8 @@ For the test part, we will use 60fps frames videos to train our model as shown i
  ![Compare with the original frame](./pic2.jpg)
 
 ## How it is related to Deep Learning for CV ...  - Qiming 
-
-With the continuous success of deep learning in the computer field, researchers have tried to combine deep learning with video interpolation technology to meet the needs of coherent video. The main advantages of deep learning in video flatform are:
-1. Achieving better transformation learning and achieve better results.
-2. Learning models can learn on their own, while traditional video compression work requires a lot of manual design.
-
-
-We design a convolutional neural network to estimate a proper convolutional kernel to synthesize each output pixel in the interpolated images. Our method captures both the motion and interpolation coefficients and uses these kernels to directly convolve with input images to synthesize a middle video frame. Our neural network can be trained using widely available video data, which provides a sufficiently large training dataset. 
-
+Traditional methods use optical flow for frame interpolation. However, in general, optical flow cannot be calculated from images without ambiguity (known as the aperture problem in computer vision); additional constraints are needed to find a unique solution. Therefore, the quality of the interpolation heavily depends on the accuracy of the flow estimation. We design a convolutional neural network to estimate a proper convolutional kernel to synthesize each output pixel in the interpolated images. 
+Compared to the optical flow based interpolation, our method captures both the motion and interpolation coefficients and uses these kernels to directly convolve with input images to synthesize a middle video frame. Our neural network can be trained using widely available video data, which provides a sufficiently large training dataset. The main advantages of our method are: Achieving better transformation learning and achieve better results; Learning models can learn on their own, while traditional video compression work requires a lot of manual design. The disadvantage of this method is: it requires a high amount of memory.
 
 ## Steps 
     - research paper 
