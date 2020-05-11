@@ -19,7 +19,14 @@ For example, we will use 60fps frames videos to train our model. We use first fr
 
  ![Compare with the original frame](./pic2.jpg)
 
-## How it is related to Deep Learning for CV ...  - Qiming  
+## How it is related to Deep Learning for CV ...  - Qiming 
+Traditional methods use optical flow for frame interpolation. However, in general, optical flow cannot be calculated from images with ambiguity (known as the aperture problem[7] in computer vision); additional constraints are needed to find a unique solution. Therefore, the quality of the interpolation heavily depends on the accuracy of the flow estimation. It is important to note that this work implements the work of Niklaus et al.[1]. on Adaptive Separable Convolution, which claims high-quality results on the video frame interpolation task. We design a convolutional neural network to estimate a proper convolutional kernel to synthesize each output pixel in the interpolated images. Instead of implementing optical flow-based interpolation, our method captures both the motion and interpolation coefficients, generates kernel through convolution layers, and synthesizes an intermediate video frame. 
+
+Our neural network can be trained using widely available video data, which provides a sufficiently large training dataset. The main advantages of our method are: 
+1. It achieves better transformation learning and better results; 
+2. It learns models can learn on their own, while traditional video compression work requires a lot of manual design. 
+The disadvantage of this method is: it requires a large amount of graphics memory.
+
 
 ## Steps 
     - research paper 
@@ -111,3 +118,4 @@ The graphics memory of GPU could be not enough for some data during training and
 - Cote, R. (2016, February 22). Motion Interpolation On TVs: Soap Opera Effect. Retrieved April 26, 2020, from https://www.rtings.com/tv/tests/motion/motion-interpolation-soap-opera-effect.
 - Epson Frame Interpolation. (n.d.). Retrieved April 26, 2020, from https://files.support.epson.com/docid/cpd5/cpd52094/source/adjustments/tasks/frame_interpolation.html.
 - What Is The Soap Opera Effect? - Everything You Need To Know. (2019, June 10). Retrieved April 26, 2020, from https://www.displayninja.com/what-is-the-soap-opera-effect/.
+- Florian Raudies (2013) Optic flow. Scholarpedia, 8(7):30724. Retrieved May 10, 2020, from http://www.scholarpedia.org/article/Optic_flow
