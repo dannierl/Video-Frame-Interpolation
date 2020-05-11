@@ -23,8 +23,8 @@ For the test part, we will use 60fps frames videos to train our model as shown i
 
  ![Compare with the original frame](./pic2.jpg)
 
-## How it is related to Deep Learning for CV ...  - Qiming 
-Traditional methods use optical flow for frame interpolation. However, in general, optical flow cannot be calculated from images with ambiguity (known as the aperture problem[6] in computer vision); additional constraints are needed to find a unique solution. Therefore, the quality of the interpolation heavily depends on the accuracy of the flow estimation. It is important to note that this work implements the work of Niklaus et al.[1]. on Adaptive Separable Convolution, which claims high-quality results on the video frame interpolation task. We design a convolutional neural network to estimate a proper convolutional kernel to synthesize each output pixel in the interpolated images. Instead of implementing optical flow-based interpolation, our method captures both the motion and interpolation coefficients, generates kernel through convolution layers, and synthesizes an intermediate video frame. 
+## How it is related to Deep Learning for CV 
+Traditional methods use optical flow for frame interpolation. However, in general, optical flow cannot be calculated from images with ambiguity (known as the aperture problem[7] in computer vision); additional constraints are needed to find a unique solution. Therefore, the quality of the interpolation heavily depends on the accuracy of the flow estimation. It is important to note that this work implements the work of Niklaus et al.[1]. on Adaptive Separable Convolution, which claims high-quality results on the video frame interpolation task. We design a convolutional neural network to estimate a proper convolutional kernel to synthesize each output pixel in the interpolated images. Instead of implementing optical flow-based interpolation, our method captures both the motion and interpolation coefficients, generates kernel through convolution layers, and synthesizes an intermediate video frame. 
 
 Our neural network can be trained using widely available video data, which provides a sufficiently large training dataset. The main advantages of our method are: 
 1. It achieves better transformation learning and better results; 
@@ -40,7 +40,7 @@ The disadvantage of this method is: it requires a large amount of graphics memor
 There are several steps towards making the project. First, We are going to read some related articles and look into previous works on video frame interpolation. We are currently working on bring tradition video coding algorithms into this project, and adapt them into machine learning algorithms. Then, we can decide which approach we are going to take to prediction inter-frame images.  
 Second, we need to decide which dataset we are going to use to train and test the neural network. Since we plan to convert lower FPS videos to 60FPS or 90FPS, we need to find some native 60FPS and 90 FPS video or corresponding picture frames.  
 In addition, we are going to implement the research method of Niklaus et al. from scratch using Keras library on Ubuntu 18.04 with Anaconda. Also, we will develop a demo for quantitative analysis and generate videos for class presentation.  
-Finally, we will run experiment on our demo against test data, or possibly previous research, such as Sepconv Slomo. Mstrics including MSE, PSNR, and SSIM will be used to quantify the results and evaluate the performance. A final report will be conducted to summarize our experience results. 
+Finally, we will run experiment on our demo against test data, or possibly previous research, such as Sepconv Slomo. Metrics including MSE, PSNR, and SSIM will be used to quantify the results and evaluate the performance. A final report will be conducted to summarize our experience results. 
  
 ## Proposed Framework
 We will develop a deep neural network based on the Adaptive Convolution Network of Niklaus et al. As illustrated in Figure ?, the convolution layers will take in two receptive fields, R1 and R2, from two consecutive frames respectively.  
@@ -72,7 +72,7 @@ For the project schedule, we have planned the following dates and events at this
     - results: 24/25 -> 60, -> 90
     - compared with other works  
 ### Results:
-We use our interpolation model to process the input videos with frame rate 24/25 fps to generate new videos with increased frame rate 60 and 90 fps. And the input videos are from a wide variety of video datasets with different resolutions.
+We use our interpolation model to process the input videos with frame rate 24/25 fps to generate new videos with increased frame rate 60 and 90 fps. And the input videos will be got from Middlebury datasets and from YouTube if necessary.
 
 1. Vimeo90K
 
