@@ -19,9 +19,10 @@ DVC:An End-to-end Deep Video Compression Framework Guo Lu1, Wanli Ouyang2, Dong 
    - All created from scratch ... 
 ## CNN Architecture: refer to Niklaus et al. -Daniel 
 
+## Dataset - Daniel
+
 ## Schedule: revise and add new schedules - Daniel 
 ## Results
-   - Dataset - Daniel 
    - Quantitative evaluation: refer to paper - Fenyang 
    - Visual comparison  - Fenyang 
    - Remove RMSE  - Fenyang 
