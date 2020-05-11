@@ -19,7 +19,7 @@ As you can see in Figure 3, the object moves from one frame to the next frame. T
 
  ![Generate frame with two frame](./pic3.jpg)
 
-For the test part, we will use 60fps frames videos to train our model as shown in Figure 4. We will devide each video in the data set to three set of frames: t, t+1, t+2. we will use the t frame and t+2 frame as input and t+1 frame as ground truth. We will use this new frame to compare with the second frame to accurately model.
+For the test part, we will use 60fps frames videos to train our model as shown in Figure 4. Each video in the data set will be process in three set of rames:t, t+1, t+2, where t is from 1th frames to 58 frames. We will use the t frame and t+2 frame as input and t+1 frame as ground truth. The output frame will be used to compare with the original t+1 frame to accurately model.
 
  ![Compare with the original frame](./pic2.jpg)
 
