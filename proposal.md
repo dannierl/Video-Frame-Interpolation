@@ -1,4 +1,4 @@
-# Initial Proposal
+# Final Proposal
 
 > Please remember to rename each subtitle 
 
