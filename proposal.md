@@ -23,7 +23,14 @@ For the test part, we will use 60fps frames videos to train our model as shown i
 
  ![Compare with the original frame](./pic2.jpg)
 
-## How it is related to Deep Learning for CV ...  - Qiming  
+## How it is related to Deep Learning for CV ...  - Qiming 
+Traditional methods use optical flow for frame interpolation. However, in general, optical flow cannot be calculated from images with ambiguity (known as the aperture problem[7] in computer vision); additional constraints are needed to find a unique solution. Therefore, the quality of the interpolation heavily depends on the accuracy of the flow estimation. It is important to note that this work implements the work of Niklaus et al.[1]. on Adaptive Separable Convolution, which claims high-quality results on the video frame interpolation task. We design a convolutional neural network to estimate a proper convolutional kernel to synthesize each output pixel in the interpolated images. Instead of implementing optical flow-based interpolation, our method captures both the motion and interpolation coefficients, generates kernel through convolution layers, and synthesizes an intermediate video frame. 
+
+Our neural network can be trained using widely available video data, which provides a sufficiently large training dataset. The main advantages of our method are: 
+1. It achieves better transformation learning and better results; 
+2. It learns models can learn on their own, while traditional video compression work requires a lot of manual design. 
+The disadvantage of this method is: it requires a large amount of graphics memory.
+
 
 ## Steps 
     - research paper 
@@ -32,20 +39,30 @@ For the test part, we will use 60fps frames videos to train our model as shown i
     - results analasys
 There are several steps towards making the project. First, We are going to read some related articles and look into previous works on video frame interpolation. We are currently working on bring tradition video coding algorithms into this project, and adapt them into machine learning algorithms. Then, we can decide which approach we are going to take to prediction inter-frame images.  
 Second, we need to decide which dataset we are going to use to train and test the neural network. Since we plan to convert lower FPS videos to 60FPS or 90FPS, we need to find some native 60FPS and 90 FPS video or corresponding picture frames.  
-In addition, we are going to implement our method and develop a demo for quantitative analysis and class presentation. At this moment, we decide to build the project using Keras library on Ubuntu 18.04.  
-Finally, we will run own experiment demo againt exsting project/research, such as Sepconv Slomo. Mstrics including MSE, RMSE, PSNR, and SSIM will be used to quantify the results and evaluate the performance.
+In addition, we are going to implement Niklaus's research method from scratch using Keras library on Ubuntu 18.04 with Anaconda. Also, we will develop a demo for quantitative analysis and generate videos for class presentation. 
+Finally, we will run experiment on our demo against test data, such as Sepconv Slomo. Mstrics including MSE, PSNR, and SSIM will be used to quantify the results and evaluate the performance. A final report will be conducted to summarize our experience results. 
+ 
+## Proposed Framework
+We will develop a deep neural network based on Niklaus's Adaptive Convolution Network. As illustrated in Figure ?, the convolution layers will take in two receptive fields, R1 and R2, from two consecutive frames respectively.  
+![Proposed Framework](./framework.png)
+The convolutional model will be trained to output a kernal K, which will be used with the corresponding patches, P1 and P2,  centered in receptive fields, to compute the output pixel of the interpolated frame I_hat. The formula for computing the output pixel is shown as below:   
 
+![Formula for computing the interpolation pixel I_hat(x, y)](./formula1.png)
+
+## Dataset
+We will be training and testing our model using 720p video images from Middlebury dataset as Niklaus and DAIN did. It will allow us to do similar experiment or even comparison if possible. If more data are needed for training, we will download as many 720p video as needed via YouTube.  
 
 ## Schedule
     - important dates
 For the project schedule, we have planned the following dates and events at this moment. However, schedule may be slightly changed in the future according to the circumstances.
 - April 23 (Thursday): Meeting and review on initial proposal
 - April 27 (Monday): Initial proposal due
-- April 30 (Thursday): Finish reading Chapter 6, 10, and 11 of the textbook. Daniel and Wang should finish reading the DAIN and Sepconv Slomo article and present it to the rest of the group
-- May 4 (Monday): Meeting on final proposal 
-- May 7 (Thursday): Meeting and review on final proposal
+- May 7 (Thursday): Finish reading Chapter 6, 10, and 11 of the textbook. Daniel and Wang should finish reading the DAIN and Sepconv Slomo article and present it to the rest of the group
+- May 7 (Thursday): Meeting on final proposal 
+- May 9 (Saturday): Meeting and review on final proposal
 - May 11 (Monday): Final proposal due
-- May 23 (Saturday): Final code review
+- May 11 (Monday): Meeting on coding plan
+- May 24 (Sunday): Final code review
 - May 26 (Tuesday): Final report review
 - May 30 (Saturday): Presentation rehearsal
 - June 1 (Monday): Presentation
@@ -98,10 +115,11 @@ The training time could also take longer since it somehow depends on what hardwa
 
 The graphics memory of GPU could be not enough for some data during training and testing.
 
-## Reference
-
+## Reference  
+- Niklaus, S., Mai, L., & Liu, F. (2017). Video frame interpolation via adaptive convolution. In IEEE Conference on Computer Vision and Pattern Recognition (pp. 670-679).
 - Niklaus, S., Mai, L., & Liu, F. (2017). Video frame interpolation via adaptive separable convolution. In IEEE International Conference on Computer Vision (pp. 261-270).
 - Bao, W., Lai, W. S., Ma, C., Zhang, X., Gao, Z., & Yang, M. H. (2019). Depth-aware video frame interpolation. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (pp. 3703-3712).
 - Cote, R. (2016, February 22). Motion Interpolation On TVs: Soap Opera Effect. Retrieved April 26, 2020, from https://www.rtings.com/tv/tests/motion/motion-interpolation-soap-opera-effect.
 - Epson Frame Interpolation. (n.d.). Retrieved April 26, 2020, from https://files.support.epson.com/docid/cpd5/cpd52094/source/adjustments/tasks/frame_interpolation.html.
 - What Is The Soap Opera Effect? - Everything You Need To Know. (2019, June 10). Retrieved April 26, 2020, from https://www.displayninja.com/what-is-the-soap-opera-effect/.
+- Florian Raudies (2013) Optic flow. Scholarpedia, 8(7):30724. Retrieved May 10, 2020, from http://www.scholarpedia.org/article/Optic_flow
