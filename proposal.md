@@ -29,17 +29,17 @@ For example, we will use 60fps frames videos to train our model. We use first fr
 There are several steps towards making the project. First, We are going to read some related articles and look into previous works on video frame interpolation. We are currently working on bring tradition video coding algorithms into this project, and adapt them into machine learning algorithms. Then, we can decide which approach we are going to take to prediction inter-frame images.  
 Second, we need to decide which dataset we are going to use to train and test the neural network. Since we plan to convert lower FPS videos to 60FPS or 90FPS, we need to find some native 60FPS and 90 FPS video or corresponding picture frames.  
 In addition, we are going to implement Niklaus's research method from scratch using Keras library on Ubuntu 18.04 with Anaconda. Also, we will develop a demo for quantitative analysis and generate videos for class presentation. 
-Finally, we will run own experiment demo againt exsting project/research, such as Sepconv Slomo. Mstrics including MSE, PSNR, and SSIM will be used to quantify the results and evaluate the performance. A final report will be conducted to summarize our experience results. 
+Finally, we will run experiment on our demo against test data, such as Sepconv Slomo. Mstrics including MSE, PSNR, and SSIM will be used to quantify the results and evaluate the performance. A final report will be conducted to summarize our experience results. 
  
 ## Proposed Framework
-We will develope a deep neural network based on Niklaus's Adaptive Convolution Network. As illustrated in Figure ?, the convolution layers will take in two receptive fields, R1 and R2, from two consecutive frames respectively.  
+We will develop a deep neural network based on Niklaus's Adaptive Convolution Network. As illustrated in Figure ?, the convolution layers will take in two receptive fields, R1 and R2, from two consecutive frames respectively.  
 ![Proposed Framework](./framework.png)
-The convultional model will be trained to output a kernal K, which will be used with the corresponding patches, P1 and P2,  centered in receptive fields, to compute the output pixel of the interpolation frame I_hat. The formula for computing the output pixel is shown as below:   
+The convolutional model will be trained to output a kernal K, which will be used with the corresponding patches, P1 and P2,  centered in receptive fields, to compute the output pixel of the interpolated frame I_hat. The formula for computing the output pixel is shown as below:   
 
 ![Formula for computing the interpolation pixel I_hat(x, y)](./formula1.png)
 
 ## Dataset
-We will be training and testing our model using 720p video images from Middlebury dataset as Niklaus and DAIN did. It will allow us to do similar experiment or even comparison if possible. If more data is needed training, we will download as many 720p video as needed via YouTube.  
+We will be training and testing our model using 720p video images from Middlebury dataset as Niklaus and DAIN did. It will allow us to do similar experiment or even comparison if possible. If more data are needed for training, we will download as many 720p video as needed via YouTube.  
 
 ## Schedule
     - important dates
