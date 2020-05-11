@@ -29,7 +29,7 @@ Traditional methods use optical flow for frame interpolation. However, in genera
 Our neural network can be trained using widely available video data, which provides a sufficiently large training dataset. The main advantages of our method are: 
 1. It achieves better transformation learning and better results; 
 2. It learns models can learn on their own, while traditional video compression work requires a lot of manual design. 
-The disadvantage of this method is: it requires a large amount of graphics memory.
+However, there is a disadvantage of generating large kernel for each pixel that it requires huge amount of graphics memory.
 
 
 ## Steps 
