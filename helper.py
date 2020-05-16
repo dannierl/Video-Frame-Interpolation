@@ -2,7 +2,8 @@ import cv2
 import numpy as np
 import os
 
-class Helper:
+
+class Helper(object):
     def __init__(self):
         pass
 
