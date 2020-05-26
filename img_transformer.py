@@ -40,7 +40,7 @@ class ImgTransformer(object):
         :param image_sets:  a numpy array of RGB image sets with shape (set_cnt, image_cnt_per_set, height, width, 3)
         :param b_size:  value for the height and width of one block
         :param pad_en:  switch for padding operation
-        :return:  a numpy array of blocks with shape (b_size, b_size, 3)
+        :return:  a numpy array of blocks with shape (set_cnt, image_cnt_per_set, b_size, b_size, 3)
         """
         blocks = []
         for image_set in image_sets:
@@ -50,7 +50,7 @@ class ImgTransformer(object):
                 else:
                     padded_image = self.image_padding(image, (b_size - 1) >> 1)
                     blocks.append(extract_patches_2d(padded_image, (b_size, b_size)))
-        return blocks
+        return np.asarray(blocks)
 
     def image_to_patch(self, image_sets, p_size=3, pad_en=True):
         """
@@ -58,7 +58,7 @@ class ImgTransformer(object):
         :param image:  a numpy array of RGB image sets with shape (set_cnt, image_cnt_per_set, height, width, 3)
         :param p_size:  value for the height and width of one patch
         :param pad_en:  switch for padding operation
-        :return:  a numpy array of patches with shape (p_size, p_size, 3)
+        :return:  a numpy array of patches with shape (set_cnt, image_cnt_per_set, p_size, p_size, 3)
         """
         patches = []
         for image_set in image_sets:
