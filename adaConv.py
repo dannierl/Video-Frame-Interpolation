@@ -19,7 +19,7 @@ class adaConv(object):
         rtx_optimizer: A boolean indicate if RTX optimizer is turned on
     """
     debug = False
-    rtx_optimizer = False
+    rtx_optimizer = True
     b_size = 79
     p_size = 41
 
@@ -158,16 +158,17 @@ class adaConv(object):
         pred_model = Model(inputs = [block_input, patch_input], outputs = y)
         pred_model.summary()
         # =================================================
-        opt = tf.keras.optimizers.Adam()
+        # Load weights from model
+        if mode == 'default':
+            pred_model.load_weights(self.hdf5_path)
+            print("Reloaded model from " + self.hdf5_path)
+
+        opt = tf.keras.optimizers.Adamax()
         if self.rtx_optimizer == True:
             opt = tf.train.experimental.enable_mixed_precision_graph_rewrite(opt)
         pred_model.compile(optimizer=opt, loss='mse')
         
         # =================================================
-        # Load weights from model
-        if mode == 'default':
-            pred_model.load_weights(self.hdf5_path)
-            print("Reloaded model from " + self.hdf5_path)
 
         # Save model to json file 
         model_json = pred_model.to_json()
@@ -184,5 +185,5 @@ class adaConv(object):
                                     monitor='val_loss',save_best_only=True)
         callbacks_list = [earlystop, checkpointer]
 
-        pred_model.fit([R, P], I, batch_size=64, epochs=1000, verbose=2, validation_split=0.5, callbacks=callbacks_list)
+        pred_model.fit([R, P], I, batch_size=64, epochs=1000, verbose=2, validation_split=0.2, callbacks=callbacks_list)
         # ===================================================
