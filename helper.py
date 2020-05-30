@@ -41,4 +41,6 @@ class Helper(object):
 
     def plot_image(self, image):
         cv2.imshow('', image)
+
+        # cv2.waitKey(0)
         cv2.destroyAllWindows()
