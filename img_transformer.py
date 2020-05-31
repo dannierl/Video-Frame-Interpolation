@@ -50,8 +50,7 @@ class ImgTransformer(object):
                 padded_image = self.image_padding(image, (b_size - 1) >> 1)
                 blocks.append(extract_patches_2d(padded_image, (b_size, b_size)))
 
-        res = np.asarray(blocks)
-        res = res.reshape((res.shape[0]*res.shape[1], b_size, b_size, 3))
+        res = np.asarray(blocks).reshape((-1, b_size, b_size, 3))
         return res
 
     def image_to_patch(self, image_sets, p_size=3, pad_en=True):
@@ -75,8 +74,7 @@ class ImgTransformer(object):
                     print("tmp Shape is: ", tmp.shape)
                     print("tmp bytes = ", tmp.nbytes)
 
-        res = np.asarray(patches)
-        res = res.reshape((res.shape[0]*res.shape[1], p_size, p_size, 3))
+        res = np.asarray(patches).reshape((-1, p_size, p_size, 3))
         return res
 
     def concatenate_patch(self, p1, p2, mode='h'):
