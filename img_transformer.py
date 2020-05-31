@@ -43,14 +43,16 @@ class ImgTransformer(object):
         :return:  a numpy array of blocks with shape (set_cnt, image_cnt_per_set, b_size, b_size, 3)
         """
         blocks = []
-        for image_set in image_sets:
-            for image in image_set:
-                if not pad_en:
-                    blocks.append(extract_patches_2d(image, (b_size, b_size)))
-                else:
-                    padded_image = self.image_padding(image, (b_size - 1) >> 1)
-                    blocks.append(extract_patches_2d(padded_image, (b_size, b_size)))
-        return np.asarray(blocks)
+        for image in image_sets:
+            if not pad_en:
+                blocks.append(extract_patches_2d(image, (b_size, b_size)))
+            else:
+                padded_image = self.image_padding(image, (b_size - 1) >> 1)
+                blocks.append(extract_patches_2d(padded_image, (b_size, b_size)))
+
+        res = np.asarray(blocks)
+        res = res.reshape((res.shape[0]*res.shape[1], b_size, b_size, 3))
+        return res
 
     def image_to_patch(self, image_sets, p_size=3, pad_en=True):
         """
@@ -61,19 +63,21 @@ class ImgTransformer(object):
         :return:  a numpy array of patches with shape (set_cnt, image_cnt_per_set, p_size, p_size, 3)
         """
         patches = []
-        for image_set in image_sets:
-            for image in image_set:
-                if not pad_en:
-                    patches.append(extract_patches_2d(image, (p_size, p_size)))
-                else:
-                    padded_image = self.image_padding(image, (p_size - 1) >> 1)
-                    patches.append(extract_patches_2d(padded_image, (p_size, p_size)))
-                    if self.debug:
-                        print("padded_image Shape is: ", padded_image.shape)
-                        tmp = patches[0]
-                        print("tmp Shape is: ", tmp.shape)
-                        print("tmp bytes = ", tmp.nbytes)
-        return np.asarray(patches)
+        for image in image_sets:
+            if not pad_en:
+                patches.append(extract_patches_2d(image, (p_size, p_size)))
+            else:
+                padded_image = self.image_padding(image, (p_size - 1) >> 1)
+                patches.append(extract_patches_2d(padded_image, (p_size, p_size)))
+                if self.debug:
+                    print("padded_image Shape is: ", padded_image.shape)
+                    tmp = patches[0]
+                    print("tmp Shape is: ", tmp.shape)
+                    print("tmp bytes = ", tmp.nbytes)
+
+        res = np.asarray(patches)
+        res = res.reshape((res.shape[0]*res.shape[1], p_size, p_size, 3))
+        return res
 
     def concatenate_patch(self, p1, p2, mode='h'):
         """
