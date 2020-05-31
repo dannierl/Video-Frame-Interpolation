@@ -54,18 +54,19 @@ class adaConv(object):
         img_transformer = ImgTransformer()
 
         # =================================================
-        R1 = img_transformer.image_to_block(images[0][0], self.b_size)
-        R2 = img_transformer.image_to_block(images[0][2], self.b_size)
+        R1 = img_transformer.image_to_block(images[:, 0], self.b_size)
+        R2 = img_transformer.image_to_block(images[:, 2], self.b_size)
+
         R = np.concatenate((R1, R2), axis=3)
         del R1
         del R2
 
-        P1 = img_transformer.image_to_patch(images[0][0], self.p_size)
-        P2 = img_transformer.image_to_patch(images[0][2], self.p_size)
+        P1 = img_transformer.image_to_patch(images[:, 0], self.p_size)
+        P2 = img_transformer.image_to_patch(images[:, 2], self.p_size)
         P = np.concatenate((P1, P2), axis=2)
         del P1
         del P2
-        P = P.reshape((P.shape[0], self.p_size*self.p_size*2, 3))
+        P = P.reshape((-1, self.p_size*self.p_size*2, 3))
         # =================================================
 
         from keras.models import model_from_json
@@ -181,5 +182,5 @@ class adaConv(object):
                                     monitor='val_loss',save_best_only=True)
         callbacks_list = [earlystop, checkpointer]
 
-        pred_model.fit([R, P], I, batch_size=128, epochs=1000, verbose=2, validation_split=0.5, callbacks=callbacks_list)
+        pred_model.fit([R, P], I, batch_size=128, epochs=1000, verbose=2, validation_split=0.95, callbacks=callbacks_list)
         # ===================================================

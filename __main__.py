@@ -12,4 +12,4 @@ if __name__ == "__main__":
     model = adaConv()
     
     # train_image2 = helper.load_image(data_path, 50, 51)
-    model.ada_conv_train(train_image)
+    model.ada_conv_train(train_image, 'new')
