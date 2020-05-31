@@ -95,41 +95,37 @@ class adaConv(object):
         img_transformer = ImgTransformer()
 
         # =================================================
-        R1 = img_transformer.image_to_block(images[0][0], self.b_size)
-        R2 = img_transformer.image_to_block(images[0][2], self.b_size)
+        print(images.shape)
+        print(images[:, 0].shape)
+
+        R1 = img_transformer.image_to_block(images[:, 0], self.b_size)
+        R2 = img_transformer.image_to_block(images[:, 2], self.b_size)
+
         R = np.concatenate((R1, R2), axis=3)
         del R1
         del R2
 
-        P1 = img_transformer.image_to_patch(images[0][0], self.p_size)
-        P2 = img_transformer.image_to_patch(images[0][2], self.p_size)
+        P1 = img_transformer.image_to_patch(images[:, 0], self.p_size)
+        P2 = img_transformer.image_to_patch(images[:, 2], self.p_size)
         P = np.concatenate((P1, P2), axis=2)
         del P1
         del P2
-        P = P.reshape((P.shape[0], self.p_size*self.p_size*2, 3))
+        P = P.reshape((-1, self.p_size*self.p_size*2, 3))
 
-        # =================================================
-        I = images[0][1]
-        height, width, _ = I.shape 
-        I = I.reshape((height*width, 3))
+        I = images[:, 1].reshape((-1, 3))
+
         # =================================================
         print(R.shape, R.dtype)
         print(P.shape, P.dtype)
+        print(I.shape, I.dtype)
 
         print("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV")
         gb = 1024 * 1024 *1024
 
         print("images_mem ", images.nbytes/gb)
-        # print("R1_mem ", R1.nbytes/gb)
-        # print("R2_mem ", R2.nbytes/gb)
         print("R_mem ", R.nbytes/gb)
-        
-
-        # print("P1_mem ", P1.nbytes/gb)
-        # print("P2_mem ", P2.nbytes/gb)
         print("P_mem ", P.nbytes/gb)
 
-        # total = (R1.nbytes + R2.nbytes + R.nbytes + P1.nbytes + P2.nbytes + P2.nbytes)/gb
         total = (R.nbytes + P.nbytes)/gb
         print("total ", total)
         print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
@@ -177,7 +173,7 @@ class adaConv(object):
 
         # Add early stopping callback
         earlystop = EarlyStopping(monitor='val_loss', min_delta=1.0, \
-                                patience=10, \
+                                patience=30, \
                                 verbose=2, mode='min', \
                                 baseline=None, restore_best_weights=True)                    
         # Add modelcheckpoint callback and save model file
@@ -185,5 +181,5 @@ class adaConv(object):
                                     monitor='val_loss',save_best_only=True)
         callbacks_list = [earlystop, checkpointer]
 
-        pred_model.fit([R, P], I, batch_size=64, epochs=1000, verbose=2, validation_split=0.2, callbacks=callbacks_list)
+        pred_model.fit([R, P], I, batch_size=128, epochs=1000, verbose=2, validation_split=0.5, callbacks=callbacks_list)
         # ===================================================
