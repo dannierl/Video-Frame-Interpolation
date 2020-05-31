@@ -1,14 +1,17 @@
 import cv2
 import numpy as np
 import os.path
+import math
 from os import path
-
+from sklearn.metrics import mean_squared_error 
+from skimage.metrics import peak_signal_noise_ratio 
+from skimage.metrics import structural_similarity 
 
 class Helper(object):
     def __init__(self):
         pass
 
-    def load_imgs(self, dir_path="./", start=0, end=0, mode=1, file_format="png"):
+    def load_imgs(self, dir_path="./dataset/BlowingBubbles_416x240_50/", start=0, end=0, mode=1, file_format="png"):
         """
         Group the images of the training set
         :param dir_path:  the directory path where the image set locates
@@ -83,3 +86,16 @@ class Helper(object):
     def plot_image(self, image):
         cv2.imshow('', image)
         cv2.destroyAllWindows()
+
+    def performance_evaluation(self, image, pred, mode=1):
+        img = np.array(image.reshape(-1, 3))
+        res = pred.reshape(-1, 3)
+        
+        mse = mean_squared_error(img, res)
+        psnr = peak_signal_noise_ratio(img, res)
+        ssim = structural_similarity(img, res, multichannel=True)
+
+        avg_mse = np.mean(mse)
+        avg_psnr = np.mean(psnr)
+        avg_ssim = np.mean(ssim)
+        return avg_mse, avg_psnr, avg_ssim

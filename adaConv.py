@@ -89,49 +89,69 @@ class adaConv(object):
 
         predicted_frames = predicted_frames.reshape(images[0][0].shape)
 
-        return predicted_frames
+        return predicted_frames.astype(dtype=np.uint8)
 
 
-    def ada_conv_train(self, images, mode = 'default'):
+    def ada_conv_train(self, train_images, val_image, mode = 'default'):
         img_transformer = ImgTransformer()
 
         # =================================================
-        print(images.shape)
-        print(images[:, 0].shape)
+        train_R1 = img_transformer.image_to_block(train_images[:, 0], self.b_size)
+        val_R1 = img_transformer.image_to_block(val_image[:, 0], self.b_size)
+        R1 = np.concatenate ((train_R1, val_R1), axis=0)
+        val_ratio = val_R1.shape[0] / (val_R1.shape[0] + train_R1.shape[0])
+        del train_R1
+        del val_R1
 
-        R1 = img_transformer.image_to_block(images[:, 0], self.b_size)
-        R2 = img_transformer.image_to_block(images[:, 2], self.b_size)
+        train_R2 = img_transformer.image_to_block(train_images[:, 2], self.b_size)
+        val_R2 = img_transformer.image_to_block(val_image[:, 2], self.b_size)
+        R2 = np.concatenate ((train_R2, val_R2), axis=0)
+        del train_R2
+        del val_R2
 
         R = np.concatenate((R1, R2), axis=3)
         del R1
         del R2
+        # =================================================
+        train_P1 = img_transformer.image_to_patch(train_images[:, 0], self.p_size)
+        val_P1 = img_transformer.image_to_patch(val_image[:, 0], self.p_size)
+        P1 = np.concatenate ((train_P1, val_P1), axis=0)
+        del train_P1
+        del val_P1
 
-        P1 = img_transformer.image_to_patch(images[:, 0], self.p_size)
-        P2 = img_transformer.image_to_patch(images[:, 2], self.p_size)
+        train_P2 = img_transformer.image_to_patch(train_images[:, 2], self.p_size)
+        val_P2 = img_transformer.image_to_patch(val_image[:, 2], self.p_size)
+        P2 = np.concatenate ((train_P2, val_P2), axis=0)
+        del train_P2
+        del val_P2
+        
         P = np.concatenate((P1, P2), axis=2)
         del P1
         del P2
         P = P.reshape((-1, self.p_size*self.p_size*2, 3))
-
-        I = images[:, 1].reshape((-1, 3))
+        # =================================================
+        I1 = train_images[:, 1].reshape((-1, 3))
+        I2 = val_image[:, 1].reshape((-1, 3))
+        I = np.concatenate ((I1, I2), axis=0)
 
         # =================================================
-        print(R.shape, R.dtype)
-        print(P.shape, P.dtype)
-        print(I.shape, I.dtype)
+        # print("R: ", R.shape, R.dtype)
+        # print("P: ", P.shape, P.dtype)
+        # print("I: ", I.shape, I.dtype)
 
-        print("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV")
-        gb = 1024 * 1024 *1024
+        # print("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV")
+        # gb = 1024 * 1024 *1024
 
-        print("images_mem ", images.nbytes/gb)
-        print("R_mem ", R.nbytes/gb)
-        print("P_mem ", P.nbytes/gb)
+        # print("train_images_mem ", train_images.nbytes/gb)
+        # print("val_image_mem ", val_image.nbytes/gb)
+        # print("R_mem ", R.nbytes/gb)
+        # print("P_mem ", P.nbytes/gb)
 
-        total = (R.nbytes + P.nbytes)/gb
-        print("total ", total)
-        print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+        # total = (R.nbytes + P.nbytes)/gb
+        # print("total ", total)
+        # print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
-
+        # =================================================
         block_input = Input(shape = (self.b_size, self.b_size, 6))
         
         x = BatchNormalization()(Conv2D(32, kernel_size=(7, 7), strides = (1, 1), activation='relu')(block_input))
@@ -153,7 +173,7 @@ class adaConv(object):
         y = Reshape((3,))(y)
         
         pred_model = Model(inputs = [block_input, patch_input], outputs = y)
-        pred_model.summary()
+        # pred_model.summary()
         # =================================================
         # Load weights from model
         if mode == 'default':
@@ -174,7 +194,7 @@ class adaConv(object):
 
         # Add early stopping callback
         earlystop = EarlyStopping(monitor='val_loss', min_delta=1.0, \
-                                patience=30, \
+                                patience=10, \
                                 verbose=2, mode='min', \
                                 baseline=None, restore_best_weights=True)                    
         # Add modelcheckpoint callback and save model file
@@ -182,5 +202,5 @@ class adaConv(object):
                                     monitor='val_loss',save_best_only=True)
         callbacks_list = [earlystop, checkpointer]
 
-        pred_model.fit([R, P], I, batch_size=128, epochs=1000, verbose=2, validation_split=0.95, callbacks=callbacks_list)
+        pred_model.fit([R, P], I, batch_size=128, epochs=1, verbose=2, validation_split=val_ratio, callbacks=callbacks_list)
         # ===================================================
