@@ -101,14 +101,14 @@ class Helper(object):
         plt.plot(x_val, data_frame['loss'], 'C1', x_val, data_frame['val_loss'], 'C5')
         plt.xlabel('Epoch')
         plt.ylabel('Loss')
-        plt.legend(('loss', 'val_loss'), loc='upper right')
+        plt.legend(('train_loss', 'val_loss'), loc='upper right')
         plt.title('Training Loss')
 
         plt.figure()
         plt.plot(x_val, data_frame['accuracy'], 'C3', x_val, data_frame['val_accuracy'], 'C4')
         plt.xlabel('Epoch')
         plt.ylabel('Accuracy')
-        plt.legend(('accuracy', 'val_accuracy'), loc='upper right')
+        plt.legend(('train_acc', 'val_acc'), loc='upper right')
         plt.title('Training Accuracy')
 
         plt.show()
