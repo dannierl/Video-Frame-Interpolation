@@ -3,6 +3,9 @@ import numpy as np
 import os.path
 from os import path
 
+import pandas as pd
+import matplotlib.pyplot as plt
+
 
 class Helper(object):
     def __init__(self):
@@ -83,3 +86,30 @@ class Helper(object):
     def plot_image(self, image):
         cv2.imshow('', image)
         cv2.destroyAllWindows()
+
+    def plot_from_csv(self, csv_path='./dummy.csv'):
+        if not path.exists(csv_path):
+            print("ERROR: CSV FILE CAN NOT BE FOUND -- ", csv_path)
+
+        data_frame = pd.read_csv(csv_path)
+        # print(data_frame.shape)
+        # print(data_frame.head(10))
+
+        x_val = np.array(range(len(data_frame['loss'])))
+        print(x_val)
+        plt.figure()
+        plt.plot(x_val, data_frame['loss'], 'C1', x_val, data_frame['val_loss'], 'C5')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.legend(('train_loss', 'val_loss'), loc='upper right')
+        plt.title('Training Loss')
+
+        plt.figure()
+        plt.plot(x_val, data_frame['accuracy'], 'C3', x_val, data_frame['val_accuracy'], 'C4')
+        plt.xlabel('Epoch')
+        plt.ylabel('Accuracy')
+        plt.legend(('train_acc', 'val_acc'), loc='upper right')
+        plt.title('Training Accuracy')
+
+        plt.show()
+
