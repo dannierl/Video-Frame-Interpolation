@@ -1,6 +1,6 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
-
+import gc
 import numpy as np
 import keras.backend as K
 from keras.models import Model
@@ -183,7 +183,7 @@ class adaConv(object):
         opt = tf.keras.optimizers.Adamax()
         if self.rtx_optimizer == True:
             opt = tf.train.experimental.enable_mixed_precision_graph_rewrite(opt)
-        pred_model.compile(optimizer=opt, loss='mse')
+        pred_model.compile(optimizer=opt, loss='mse', metrics=['accuracy'])
         
         # =================================================
 
@@ -194,7 +194,7 @@ class adaConv(object):
 
         # Add early stopping callback
         earlystop = EarlyStopping(monitor='val_loss', min_delta=1.0, \
-                                patience=10, \
+                                patience=30, \
                                 verbose=2, mode='min', \
                                 baseline=None, restore_best_weights=True)                    
         # Add modelcheckpoint callback and save model file
@@ -202,5 +202,9 @@ class adaConv(object):
                                     monitor='val_loss',save_best_only=True)
         callbacks_list = [earlystop, checkpointer]
 
-        pred_model.fit([R, P], I, batch_size=128, epochs=1, verbose=2, validation_split=val_ratio, callbacks=callbacks_list)
+        history = pred_model.fit([R, P], I, batch_size=128, epochs=1000, verbose=2, validation_split=val_ratio, callbacks=callbacks_list)
         # ===================================================
+        del R
+        del P
+        gc.collect()
+        return history
