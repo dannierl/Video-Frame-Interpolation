@@ -1,5 +1,7 @@
+import time
 import cv2
 import numpy as np
+import pandas as pd
 import os.path
 import math
 from os import path
@@ -71,16 +73,14 @@ class Helper(object):
         cv2.destroyAllWindows()
         return np.asarray(imgs)
 
-    def save_image(self, ph="./output/", index_start=1, images=[]):
+    def save_image(self, image=[], index=1, ph="./saved/"):
         # expect image shape: (1,1,256,448,3)
         if not(path.isdir(ph)):
             os.mkdir(ph)
             print("Creating save image path:" + ph)
-        filename = index_start
+        filename = index
         ph += "{}.png"
-        for img_set in images:
-            cv2.imwrite(ph.format(filename), img_set[0])
-            filename += 1
+        cv2.imwrite(ph.format(filename), image)
         cv2.destroyAllWindows()
 
     def plot_image(self, image):
@@ -99,3 +99,15 @@ class Helper(object):
         avg_psnr = np.mean(psnr)
         avg_ssim = np.mean(ssim)
         return avg_mse, avg_psnr, avg_ssim
+
+    def save_history(self, history): 
+        hist_csv_file = './history/' + time.strftime('history_%x_%X.csv').replace('/','-').replace(':','-')
+
+        print(history.history.keys())
+        # convert the history.history dict to a pandas DataFrame:     
+        hist_df = pd.DataFrame(history.history) 
+
+        # save to csv: 
+        with open(hist_csv_file, mode='w') as f:
+            hist_df.to_csv(f)
+        print("History saved in ", hist_csv_file)
