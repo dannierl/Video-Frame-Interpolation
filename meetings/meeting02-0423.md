@@ -1,4 +1,5 @@
 # Meeting 2 Notes (April 23)
+
 ## Upcoming plan for April 26 Sunday
 	- before noon: make pull request and give comments on everyone's request 
 	- after noon: finish sharelatex  
