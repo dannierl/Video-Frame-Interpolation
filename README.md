@@ -4,6 +4,15 @@
 
 ## Environment Setup
 
+
+#### Training and testing dataset 
+We use triplet dataset from Vimeo90K dataset to train our model. Vimeo90K is a large-scale, high-quality video dataset with 89,800 video clips downloaded from vimeo.com. The triplet dataset extracted from 15K selected video clips from Vimeo-90K. The triplet dataset has 73,171 triplets for trainning, where each triplet is a 3-frame sequences with fixed resolution of 448 x 256 pixels. We train our network to predict the middle frame of each triplet. 
+
+#### Training method/configuration 
+We jointly train the model for 100 epochs. For every new lowest loss value we found during the trainning, if we can not get a new lowest loss value in next 10 epochs, we will stop this trainning and try the next 100 epochs with new loss value. 
+
+
+
 ## Running
 
 # Final Report
