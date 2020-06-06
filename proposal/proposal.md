@@ -1,7 +1,5 @@
 # Final Proposal
 
-> Please remember to rename each subtitle 
-
 ## Introduction and diagram for the Video Frame Interpolation project
 When we watch movies and TV shows online today, most of them are 24fps format. As most of our screens like monitors or television are 60hz or even 120hz frame rate or more, use Figure 1 as example. We will see some common artifacts on the screen if we watch these videos on our screen. The reason for the artifacts occurring is because the low frame rate video will lose moving detail during the movement.
 
