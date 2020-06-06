@@ -8,7 +8,7 @@ Regarding to the accuracy, both training and validation have the similar ascendi
 
 
 
-![image-loss](.\results\loss_on_same_scene.png) ![image-acc](.\results\acc_on_same_scene.png)
+<img src=".\results\loss_on_same_scene.png" alt="image-loss" style="zoom:90%;" /> <img src=".\results\acc_on_same_scene.png" alt="image-acc" style="zoom: 90%;" />
 
 Figure XX: (a) The training loss and validation loss show the training set maybe is small relative to the validation dataset.
 
@@ -22,11 +22,11 @@ The training accuracy steps down in the first about 100 epochs but quickly rebou
 
 
 
-<img src=".\results\train_loss_on_diff_scene.png" alt="img" style="zoom:50%;" /> <img src=".\results\val_loss_on_diff_scene.png" alt="img" style="zoom:50%;" />
+<img src=".\results\train_loss_on_diff_scene.png" alt="img" style="zoom:40%;" /> <img src=".\results\val_loss_on_diff_scene.png" alt="img" style="zoom: 40%;" />
 
 
 
-![image-20200606135119012](.\results\acc_on_diff_scene.png)
+<img src=".\results\acc_on_diff_scene.png" alt="image-20200606135119012" style="zoom: 90%;" />
 
 
 
@@ -65,12 +65,12 @@ We tested our model with Vimeo triplet sets and HEVC data. The table below shows
 
 
 
-![img](.\results\origin_same_scene.png)    ![img](.\results\interpolated_same_scene.png)
+<img src=".\results\origin_same_scene.png" alt="img" style="zoom:90%;" />    <img src=".\results\interpolated_same_scene.png" alt="img" style="zoom:90%;" />
 
 Figure XX  -- same scene
 
 
 
-![img](.\results\origin_diff_scene.png)  ![img](.\results\interpolated_diff_scene.png)
+<img src=".\results\origin_diff_scene.png" alt="img" style="zoom:90%;" />  <img src=".\results\interpolated_diff_scene.png" alt="img" style="zoom:90%;" />
 
 Figure XX  -- different scene
