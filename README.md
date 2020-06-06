@@ -8,7 +8,28 @@
 
 # Final Report
 
-> Please remember to rename each subtitle 
+--------------------------------------
+Last meeting
+### What is Batch Normalization?  
+  - [examples](https://www.programcreek.com/python/example/100588/keras.layers.normalization.BatchNormalization)  
+  - [library](https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization)  
+  - AdaConv P672  
+### ReLu: what is reitified ReLu  
+  - AdaConv P672  
+### Softmax: spacial softmax  
+  - AdaConv P672 
+
+- Convolution Layers - Lin & Qiming
+
+--------------------------------------
+- Possible Improvement - Qiming
+  - More training on data
+    Collecting more data can improve model accuracy. Deep neural networks require so much training data because we don't know which are the representative data. More training data can increase the probability of including representative data. The representative data is insufficient, so the model thus obtained is not easy to form a description of the entire data, and the generalization ability is not enough.
+
+  - Memory optimization
+    We always want to be able to train larger and deeper network models. Although the development of hardware is fast, in order to build a more complex deep network model, we always hope that more DARM/memory storage is available. For the same network, if a dedicated optimization strategy is proposed to reduce DRAM power consumption, there will be a higher GPU utilization rate.
+
+
 
 ## Introduction and diagram for the Video Frame Interpolation project
 When we watch movies and TV shows online today, most of them are 24fps format. As most of our screens like monitors or television are 60hz or even 120hz frame rate or more, use Figure 1 as example. We will see some common artifacts on the screen if we watch these videos on our screen. The reason for the artifacts occurring is because the low frame rate video will lose moving detail during the movement.
@@ -131,3 +152,5 @@ The graphics memory of GPU could be not enough for some data during training and
 - Niklaus, S., Mai, L., & Liu, F. (2017). Video frame interpolation via adaptive convolution. In IEEE Conference on Computer Vision and Pattern Recognition (pp. 670-679).
 - Niklaus, S., Mai, L., & Liu, F. (2017). Video frame interpolation via adaptive separable convolution. In IEEE International Conference on Computer Vision (pp. 261-270).
 - What Is The Soap Opera Effect? - Everything You Need To Know. (2019, June 10). Retrieved April 26, 2020, from https://www.displayninja.com/what-is-the-soap-opera-effect/.
+
+
