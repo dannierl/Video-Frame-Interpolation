@@ -11,7 +11,7 @@ We use the triplet dataset from the Vimeo90K dataset to train our model. Vimeo90
 For the testing data, we use the triplet dataset and HEVC dataset. For the HEVC dataset, we use BlowingBubbles and BasketballDrill. Each part has 500 frames and we use 250 of these 500 frames for testing.
 
 #### Training method/configuration 
-To train our neural network, we use the AdaMax to optimize the proposed network. We set beta1 to 0.9 and beta2 to 0.999. The learning rate is 0.001 and we use 128 for the Mini-batch size to minimize the loss function. The maximum epochs number is set to 1000.
+To train our neural network, we initialized our neural network parameters using Xavier initialization method and use the AdaMax to optimize the proposed network. Xavier initialization is a method to ensure variance of both input and output to be the same. We set beta1 to 0.9 and beta2 to 0.999. The learning rate is 0.001 and we use 128 for the Mini-batch size to minimize the loss function. The maximum epochs number is set to 1000.
 
 We also use EarlyStopping to increase our training speed. We monitor validation loss with 1.0 for Min_delta and 10 for the patience. The model will save the best one to hdf5 file when early stopping is occurred.
 
