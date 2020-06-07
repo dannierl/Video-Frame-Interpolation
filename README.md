@@ -24,6 +24,9 @@ Last meeting
   - More training on data
     In this project, traning each batch costs about 150 seconds. We only use 7 set of scene frame and the total cost time of training is about 30 hours. Patience, a parameter of Earlystopping, stands the number of epochs with no improvement after which training will be stopped. If the dataset has not so good variation for different categories, a higher value for patience to Boost the accuracy of a model. If we had more time on model training, the presence of more data results in better and boosts the accuracy of models. 
 
+  - Xavier initialization
+    How to ensure the difference between input and output, and guarantee the model's convergence speed and stability? The basic idea of Xavier initialization is to keep the variance of the input and output the same, as to avoid the gradient from being too small and the parameters difficult to be updated.
+
   - Memory optimization
     We always want to be able to train larger and deeper network models. Does all the data have to be in the memory at the same time? To optimize memory usage, we can use code or a library to stream or progressively load data as-needed into memory for training.
 
