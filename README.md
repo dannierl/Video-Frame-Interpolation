@@ -14,20 +14,18 @@ Last meeting
   - [examples](https://www.programcreek.com/python/example/100588/keras.layers.normalization.BatchNormalization)  
   - [library](https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization)  
   - AdaConv P672  
-### ReLu: what is reitified ReLu  
-  - AdaConv P672  
 ### Softmax: spacial softmax  
   - AdaConv P672 
 
 - Convolution Layers - Lin & Qiming
-
+  For concolution layer, we implement batch normalization layer to obey the convolutional property. It is a method of unifying scattered data and a method of optimizing neural networks, so that different elements of the same feature map, at different locations, are normalized in the same way. With unified specifications of data, machine learning can be more easily learned into the data Rules. We also apply spatial softmax layer is used to find the expected pixel location of feature maps.
 --------------------------------------
 - Possible Improvement - Qiming
   - More training on data
-    Collecting more data can improve model accuracy. Deep neural networks require so much training data because we don't know which are the representative data. More training data can increase the probability of including representative data. The representative data is insufficient, so the model thus obtained is not easy to form a description of the entire data, and the generalization ability is not enough.
+    In this project, traning each batch costs about 150 seconds. We only use 7 set of scene frame and the total cost time of training is about 30 hours. Patience, a parameter of Earlystopping, stands the number of epochs with no improvement after which training will be stopped. If the dataset has not so good variation for different categories, a higher value for patience to Boost the accuracy of a model. If we had more time on model training, the presence of more data results in better and boosts the accuracy of models. 
 
   - Memory optimization
-    We always want to be able to train larger and deeper network models. Although the development of hardware is fast, in order to build a more complex deep network model, we always hope that more DARM/memory storage is available. For the same network, if a dedicated optimization strategy is proposed to reduce DRAM power consumption, there will be a higher GPU utilization rate.
+    We always want to be able to train larger and deeper network models. Does all the data have to be in the memory at the same time? To optimize memory usage, we can use code or a library to stream or progressively load data as-needed into memory for training.
 
 
 
