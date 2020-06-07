@@ -2,7 +2,7 @@
 
 ## DESCRIPTION
 
-## Environment Setup
+#### Environment Setup
 This project is training and testing on Ubuntu 18.04 with Anaconda. We use one Quatro RTX 6000 and two RTX 2070 Super to train our model. Because all the video cards we use are RTX series, we can enable the RTX 16-bit optimization which makes our training faster. The model is built on Keras. The training is on blocks and patches. We use three framesets at a time, which is 9 frames in total. The block memory we use is about 22 GB and patch memory is about 6 GB.
 
 #### Training and testing dataset 
@@ -14,17 +14,6 @@ For the testing data, we use the triplet dataset and HEVC dataset. For the HEVC 
 To train our neural network, we use the AdaMax to optimize the proposed network. We set beta1 to 0.9 and beta2 to 0.999. The learning rate is 0.001 and we use 128 for the Mini-batch size to minimize the loss function. The maximum epochs number is set to 1000.
 
 We also use EarlyStopping to increase our training speed. We monitor validation loss with 1.0 for Min_delta and 10 for the patience. The model will save the best one to hdf5 file when early stopping is occurred.
-
-
-
-
-#### Training and testing dataset 
-We use triplet dataset from Vimeo90K dataset to train our model. Vimeo90K is a large-scale, high-quality video dataset with 89,800 video clips downloaded from vimeo.com. The triplet dataset extracted from 15K selected video clips from Vimeo-90K. The triplet dataset has 73,171 triplets for trainning, where each triplet is a 3-frame sequences with fixed resolution of 448 x 256 pixels. We train our network to predict the middle frame of each triplet. 
-
-#### Training method/configuration 
-We jointly train the model for 100 epochs. For every new lowest loss value we found during the trainning, if we can not get a new lowest loss value in next 10 epochs, we will stop this trainning and try the next 100 epochs with new loss value. 
-
-
 
 ## Running
 
