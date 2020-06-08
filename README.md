@@ -18,17 +18,34 @@ Last meeting
   - AdaConv P672 
 
 - Convolution Layers - Lin & Qiming
-  For concolution layer, we implement batch normalization layer to obey the convolutional property. It is a method of unifying scattered data and a method of optimizing neural networks, so that different elements of the same feature map, at different locations, are normalized in the same way. With unified specifications of data, machine learning can be more easily learned into the data Rules. We also apply spatial softmax layer is used to find the expected pixel location of feature maps.
+  # introducing cnn structure
+  # explain the reason of applying bn and spacial softmax
+  In a neural network, each hidden unit’s input distribution changes every time there is a parameter update in the previous layer. This is called the internal covariate shift. This makes training slow and requires a very small learning rate and a good parameter initialization. This problem is solved by normalizing the layer’s inputs over a mini-batch and this process is therefore called Batch Normalization. We also implement spatial softmax from TensorFlow API, a function returns the expected pixel locations of each feature map. It can be used as weights to compute the mean pixel locations of each feature.
+
+
+
 --------------------------------------
 - Possible Improvement - Qiming
-  - More training on data
-    In this project, traning each batch costs about 150 seconds. We only use 7 set of scene frame and the total cost time of training is about 30 hours. Patience, a parameter of Earlystopping, stands the number of epochs with no improvement after which training will be stopped. If the dataset has not so good variation for different categories, a higher value for patience to Boost the accuracy of a model. If we had more time on model training, the presence of more data results in better and boosts the accuracy of models. 
+how does __ make the model/training/project better
+We propose that further research should be undertaken in the following areas:
 
-  - Xavier initialization
-    How to ensure the difference between input and output, and guarantee the model's convergence speed and stability? The basic idea of Xavier initialization is to keep the variance of the input and output the same, as to avoid the gradient from being too small and the parameters difficult to be updated.
+  - More training on data
+    # wrong explaination on the sets, Fenyang's comment
+    "we perform 7 rounds of training and in each round 3 sets of images from different scenes are used."
+    #too much phrase on Patience and not accurate, ask Lin
+
+    In this project, we perform 7 rounds of training; for each round, there are 3 sets of images from different scenes are used. In future research, more scenes are needed to apply and train in our model.
+    We set patience as 10. That means the training will terminate only if there is no improvement in the monitor performance measure during the 10 epochs. This might not be the most ideal model since it might go up or down from one epoch to the next. What we really care about is that the general trend should be improving, so the higher number of patience will boost the accuracy of a model which can be conducted in the future improvement.
+
 
   - Memory optimization
-    We always want to be able to train larger and deeper network models. Does all the data have to be in the memory at the same time? To optimize memory usage, we can use code or a library to stream or progressively load data as-needed into memory for training.
+    # rewrite whole thing
+    # set difference of pixel in two frames as a paramter, then filter out the pixels that is unchanged based on the parameter value you set.
+    #residue magnitude
+    ? not sure one matrix stands for a pixel
+
+   For every pair of patches we are trying to use to train our model, we can use these two patches to calculate the residues magnitude. Residues are calculated by using one patch minus the other patch. If the residues are too small, it means the small difference between the two patches. Then we do not need to train our model with this pair of patches. In this way, it can save training time and increase the model accuracy by training more data at the same time range.
+    
 
 
 
