@@ -79,13 +79,13 @@ For the project schedule, we have planned the following dates and events at this
 ## Experimental Results and Analysis
 **Training Result**
 
-During our training It takes about 150 seconds to complete one epoch. And the CNN model we finally get contains 15,842,114 parameters totally.
+During our training it takes about 150 seconds to complete one epoch. And the CNN model we finally get contains 15,842,114 parameters totally.
 
 | #Parameters (million) | Runtime per Epoch (seconds) |
 | --------------------- | --------------------------- |
 | 15.8                  | 150                         |
 
-When we train our model with the images of the same scene, the training loss continues to decrease within 20 epochs. After a following climbing halted around epoch #40, the training loss decreases again with experience and eventually keeps at a point of stability after epoch #100. The validation loss follows the trend of training loss but a gap remains between these two curves.
+When we train our model with the images of the same scene, the training loss continues to decrease within 20 epochs. After a following climbing halted around epoch #40, the training loss decreases again with experience and eventually keeps at a point of stability after epoch #100. The validation loss follows the trend of training loss, but a gap remains between these two curves.
 
 Regarding the accuracy, both training and validation have the similar ascending trend although there is a stagnancy and small drop between epochs #20 and #50 before they eventually climb to a stable higher level.
 
