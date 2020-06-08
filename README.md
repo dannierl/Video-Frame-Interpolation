@@ -49,7 +49,7 @@ There are several steps towards making the project. First, We are going to read 
 Second, we need to decide which dataset we are going to use to train and test the neural network. Since we plan to convert lower FPS videos to 60FPS or 90FPS, we need to find some native 60FPS and 90 FPS video or corresponding picture frames.  
 In addition, we are going to implement the research method of Niklaus et al. from scratch using Keras library on Ubuntu 18.04 with Anaconda. Also, we will develop a demo for quantitative analysis and generate videos for class presentation.  
 Finally, we will run experiment on our demo against test data, or possibly previous research, such as Sepconv Slomo. Metrics including MSE, PSNR, and SSIM will be used to quantify the results and evaluate the performance. A final report will be conducted to summarize our experience results. 
- 
+
 ## Proposed Framework
 We will develop a deep neural network based on the Adaptive Convolution Network of Niklaus et al. As illustrated in Figure ?, the convolution layers will take in two receptive fields, R1 and R2, from two consecutive frames respectively.  
 ![Proposed Framework](./proposal/framework.png)
@@ -76,44 +76,63 @@ For the project schedule, we have planned the following dates and events at this
 - June 1 (Monday): Presentation
 
 
-## Results and Metrics
-    - results: 24/25 -> 60, -> 90
-    - compared with other works  
-### Results:
-We use our interpolation model to process the input videos with frame rate 24/25 fps to generate new videos with increased frame rate 60 and 90 fps. And the input videos will be got from Middlebury datasets and from YouTube if necessary.
+## Experimental Results and Analysis
+**Training Result**
 
-1. Vimeo90K
+During our training it takes about 150 seconds to complete one epoch. And the CNN model we finally get contains 15,842,114 parameters totally.
 
-2. UCF101
+| #Parameters (million) | Runtime per Epoch (seconds) |
+| --------------------- | --------------------------- |
+| 15.8                  | 150                         |
 
-3. HD
+When we train our model with the images of the same scene, the training loss continues to decrease within 20 epochs. After a following climbing halted around epoch #40, the training loss decreases again with experience and eventually keeps at a point of stability after epoch #100. The validation loss follows the trend of training loss, but a gap remains between these two curves.
 
-4. Middlebury dataset
+Regarding the accuracy, both training and validation have the similar ascending trend although there is a stagnancy and small drop between epochs #20 and #50 before they eventually climb to a stable higher level.
 
-### Evaluation and Metrics:
-To evaluate our interpolation model, the metrics shown below will be used to perform the evaluation in quantitative and qualitative perspectives:
+<img src=".\results\loss_on_same_scene.png" alt="image-loss" style="zoom:90%;" /> <img src=".\results\acc_on_same_scene.png" alt="image-acc" style="zoom: 90%;" />
 
-- Quantitative Evaluation:
+Figure XX: (a) The training loss and validation loss show the training set maybe is small relative to the validation dataset.
 
-  - model parameters: the total size of the parameters used in the model
-  
-  - runtime: the runtime of frame interpolation on different resolution in the unit of second
-  
-  - MSE: Mean squared error
-  
-  - PSNR: Peak signal-to-noise ratio, the ratio between the maximum possible power of a signal and the power of corrupting noise that affects the fidelity of its representation.
-  
-  - SSIM: Structural similarity (SSIM) index is a method for predicting the perceived quality of various kinds of digital images and video. It is used for measuring the similarity between two images.
-  
-- Qualitative Evaluation:
-  
-  - Visual demonstration based on the image quality like the clear shape and the restored details.
-  
+​                   (b) The training accuracy and validation accuracy shows a fair good performance
 
-Expected Outcomes:
 
-  - a demo of playing the interpolated videos with higher frame rate while comparing against the original video
-  - a report about our interpolation approach including its framework, implementation and evaluation
+
+When we train our model with the images of different scenes, the training loss continues to decrease within the epochs in which the images are from same scenes. But the loss will jump sharply when the epoch switches to the images from different scenes. Such a phenomena is called catastrophic forgetting because the change of the training data is so significant that the model has to forget previous experience to fit the new data. However, the validation loss has a pretty much smooth trace without sharp jumping during its descending. 
+
+The training accuracy steps down in the first about 100 epochs but quickly rebounds and stays at a much higher level. Though the validation accuracy steadily climbs to the plateau and gets stable after epoch #110.
+
+<img src=".\results\train_loss_on_diff_scene.png" alt="img" style="zoom:40%;" /> <img src=".\results\val_loss_on_diff_scene.png" alt="img" style="zoom: 40%;" />
+
+
+
+<img src=".\results\acc_on_diff_scene.png" alt="image-20200606135119012" style="zoom: 90%;" />
+
+Figure XX: (a) The training loss has sharp jump while the training data change significantly. It indicates that the training set maybe is small relative to the validation dataset.             
+
+​                   (b) The validation loss shows a relative smooth descending trend.
+
+​                   (c) Both of the training accuracy and validation accuracy reach to a good performance while the training accuracy performs poorly at the early stage.
+
+
+
+**Testing Result**
+
+We test our model with Vimeo triplet sets and HEVC data. The table below shows the metrics of MSE, PSNR and SSIM we got when testing with 100 Vimeo triplet sets which are respectively from the same scene and different scenes.
+
+| 100 Vimeo Triplet Sets | MSE     | PSNR    | SSIM   |
+| ---------------------- | ------- | ------- | ------ |
+| **Same Scene**         | 51.3136 | 18.0673 | 0.6097 |
+| **Different Scenes**   | 36.9612 | 21.7903 | 0.7966 |
+
+The images below show the interpolated frames generated by our method. The upper right image is the interpolated frame based on the frames from the same scene and the upper left is the ground truth for it. The lower right one is the interpolated frame based on the frames from different scene and the lower left is the ground truth for it. As shown in the metric table above and the visual comparison below, the interpolation based on images of different scene gives a better outcome.
+
+<img src=".\results\origin_same_scene.png" alt="img" style="zoom:90%;" />    <img src=".\results\interpolated_same_scene.png" alt="img" style="zoom:90%;" />
+
+Figure XX  (a)  ground truth and the interpolated frame based on images from the same scene
+
+<img src=".\results\origin_diff_scene.png" alt="img" style="zoom:90%;" />  <img src=".\results\interpolated_diff_scene.png" alt="img" style="zoom:90%;" />
+
+​               (b) ground truth and the interpolated frame based on images from different scene
 
 ## Risks
 
