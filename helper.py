@@ -1,17 +1,21 @@
+import os
 import cv2
+import time
+import math
 import numpy as np
-import os.path
-from os import path
-
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from os import path
+from sklearn.metrics import mean_squared_error 
+from skimage.metrics import peak_signal_noise_ratio 
+from skimage.metrics import structural_similarity 
 
 class Helper(object):
     def __init__(self):
         pass
 
-    def load_imgs(self, dir_path="./", start=0, end=0, mode=1, file_format="png"):
+    def load_imgs(self, dir_path="./dataset/BlowingBubbles_416x240_50/", start=0, end=0, mode=1, file_format="png"):
         """
         Group the images of the training set
         :param dir_path:  the directory path where the image set locates
@@ -71,45 +75,76 @@ class Helper(object):
         cv2.destroyAllWindows()
         return np.asarray(imgs)
 
-    def save_image(self, ph="./output/", index_start=1, images=[]):
+    def save_image(self, image=[], index=1, ph="./saved/"):
         # expect image shape: (1,1,256,448,3)
         if not(path.isdir(ph)):
             os.mkdir(ph)
             print("Creating save image path:" + ph)
-        filename = index_start
+        filename = index
         ph += "{}.png"
-        for img_set in images:
-            cv2.imwrite(ph.format(filename), img_set[0])
-            filename += 1
+        cv2.imwrite(ph.format(filename), image)
         cv2.destroyAllWindows()
 
     def plot_image(self, image):
         cv2.imshow('', image)
         cv2.destroyAllWindows()
 
+    def performance_evaluation(self, image, pred, mode=1):
+        """
+        Evaluate one predicted frame against its ground truth image
+        :param image:   a ground truth image
+        :param pred:    a predicted frame 
+        :mode:          single image mode
+
+        :return: the average MSE, PSNR, and SSIM
+        """
+        img = np.array(image.reshape(-1, 3))
+        res = pred.reshape(-1, 3)
+        
+        mse = mean_squared_error(img, res)
+        psnr = peak_signal_noise_ratio(img, res)
+        ssim = structural_similarity(img, res, multichannel=True)
+
+        avg_mse = np.mean(mse)
+        avg_psnr = np.mean(psnr)
+        avg_ssim = np.mean(ssim)
+        return avg_mse, avg_psnr, avg_ssim
+
+    def save_history(self, history): 
+        """
+        Save history file to ./history as cvs
+        :param history:  a dictionary of history from model.fit
+        """
+        # Save history file to ./history as cvs with time stamp in the name
+        hist_csv_file = './history/' + time.strftime('history_%x_%X.csv').replace('/','-').replace(':','-')
+
+        # convert the history.history dict to a pandas DataFrame:     
+        hist_df = pd.DataFrame(history.history) 
+
+        # save to csv: 
+        with open(hist_csv_file, mode='w') as f:
+            hist_df.to_csv(f)
+        print("History saved in ", hist_csv_file)
+
     def plot_from_csv(self, csv_path='./dummy.csv'):
         if not path.exists(csv_path):
             print("ERROR: CSV FILE CAN NOT BE FOUND -- ", csv_path)
 
         data_frame = pd.read_csv(csv_path)
-        # print(data_frame.shape)
-        # print(data_frame.head(10))
 
         x_val = np.array(range(len(data_frame['loss'])))
-        print(x_val)
         plt.figure()
         plt.plot(x_val, data_frame['loss'], 'C1', x_val, data_frame['val_loss'], 'C5')
-        plt.xlabel('Epoch')
+        plt.xlabel('Epoch #')
         plt.ylabel('Loss')
         plt.legend(('train_loss', 'val_loss'), loc='upper right')
-        plt.title('Training Loss')
+        plt.title('Training Loss (MSE)')
 
         plt.figure()
         plt.plot(x_val, data_frame['accuracy'], 'C3', x_val, data_frame['val_accuracy'], 'C4')
         plt.xlabel('Epoch')
         plt.ylabel('Accuracy')
-        plt.legend(('train_acc', 'val_acc'), loc='upper right')
+        plt.legend(('train_acc', 'val_acc'), loc='lower right')
         plt.title('Training Accuracy')
 
         plt.show()
-
