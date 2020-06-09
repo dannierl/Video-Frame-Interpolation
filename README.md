@@ -1,8 +1,19 @@
 # Video-Frame-Interpolation
 
-## DESCRIPTION
+## Description
 
-## Environment Setup
+#### Environment Setup
+We train and test on Ubuntu 18.04 with Anaconda. We use one Quatro RTX 6000 and two RTX 2070 Super to train our model. Because all the video cards we use are RTX series, we can enable the RTX 16-bit optimization which makes our training faster. For the model itself, We use Keras to built our model. And for the training method, we use blocks and patches to train the model. Also, we use mini batch to reduce the memory cost and improve training efficiency. Three framesets will be used for taining at a time, which have 9 frames in total. Since we use blocks and patches, for every pixel on frame, we will have the bolcks and patches for it. So the block memory and patch memory will come to about 7.3 GB and 2 GB per frame, 22 GB and 6 GB for each set.
+
+#### Training and testing dataset 
+We use the triplet dataset from the Vimeo90K dataset to train our model. Vimeo90K is a large-scale, high-quality video dataset with 89,800 video clips downloaded from vimeo.com. The triplet dataset extracted from 15K selected video clips from Vimeo-90K. The triplet dataset has 73,171 triplets for training, where each triplet is a 3-frame sequence with a fixed resolution of 448 x 256 pixels. We train our network to predict the middle frame of each triplet. We also found Depth-Aware Video Frame Interpolation use this dataset as well. For the training data, we use 2/3 on training and 1/3 on validation.
+
+For the testing data, we use the triplet dataset and HEVC dataset. For the HEVC dataset, we use BlowingBubbles and BasketballDrill. Each part has 500 frames and we use 250 of these 500 frames for testing.
+
+#### Training method/configuration 
+To train our neural network, we initialized our neural network parameters using Xavier initialization method and use the AdaMax to optimize the proposed network. Xavier initialization is a method to ensure variance of both input and output to be the same. For AdaMax optimizer parameters, we set beta1 to 0.9, beta2 to 0.999, and learning rate to 0.001. We use 128 for the Mini-batch size to minimize the loss function. The maximum epochs number is set to 1000.
+
+We also use EarlyStopping to increase our training speed. We monitor validation loss with 1.0 for Min_delta and 10 for the patience. The model will save the best one to hdf5 file when early stopping is triggered.
 
 ## Running
 
@@ -68,13 +79,13 @@ There are several steps towards making the project. First, We are going to read 
 Second, we need to decide which dataset we are going to use to train and test the neural network. Since we plan to convert lower FPS videos to 60FPS or 90FPS, we need to find some native 60FPS and 90 FPS video or corresponding picture frames.  
 In addition, we are going to implement the research method of Niklaus et al. from scratch using Keras library on Ubuntu 18.04 with Anaconda. Also, we will develop a demo for quantitative analysis and generate videos for class presentation.  
 Finally, we will run experiment on our demo against test data, or possibly previous research, such as Sepconv Slomo. Metrics including MSE, PSNR, and SSIM will be used to quantify the results and evaluate the performance. A final report will be conducted to summarize our experience results. 
- 
+
 ## Proposed Framework
 We will develop a deep neural network based on the Adaptive Convolution Network of Niklaus et al. As illustrated in Figure ?, the convolution layers will take in two receptive fields, R1 and R2, from two consecutive frames respectively.  
 ![Proposed Framework](./proposal/framework.png)
 The convolutional model will be trained to output a kernal K, which will be used with the corresponding patches, P1 and P2,  centered in receptive fields, to compute the output pixel of the interpolated frame I_hat. The formula for computing the output pixel is shown as below:   
 
-![Formula for computing the interpolation pixel I_hat(x, y)](./proposal/formula1.png)
+![Formula for computing the interpolation pixel I_hat(x, y)](./proposal/formula0.png)
 
 ## Dataset
 We will be training and testing our model using 720p video images from Middlebury dataset as Niklaus et al. and DAIN did. It will allow us to do similar experiment or even comparison if possible. If more data are needed for training, we will download as many 720p video as needed via YouTube.  
@@ -95,54 +106,85 @@ For the project schedule, we have planned the following dates and events at this
 - June 1 (Monday): Presentation
 
 
-## Results and Metrics
-    - results: 24/25 -> 60, -> 90
-    - compared with other works  
-### Results:
-We use our interpolation model to process the input videos with frame rate 24/25 fps to generate new videos with increased frame rate 60 and 90 fps. And the input videos will be got from Middlebury datasets and from YouTube if necessary.
+## Experimental Results and Analysis
+**Training Result**
 
-1. Vimeo90K
+During our training it takes about 150 seconds to complete one epoch. And the CNN model we finally get contains 15,842,114 parameters totally.
 
-2. UCF101
+| #Parameters (million) | Runtime per Epoch (seconds) |
+| --------------------- | --------------------------- |
+| 15.8                  | 150                         |
 
-3. HD
+When we train our model with the images of the same scene, the training loss continues to decrease within 20 epochs. After a following climbing halted around epoch #40, the training loss decreases again with experience and eventually keeps at a point of stability after epoch #100. The validation loss follows the trend of training loss, but a gap remains between these two curves.
 
-4. Middlebury dataset
+Regarding the accuracy, both training and validation have the similar ascending trend although there is a stagnancy and small drop between epochs #20 and #50 before they eventually climb to a stable higher level.
 
-### Evaluation and Metrics:
-To evaluate our interpolation model, the metrics shown below will be used to perform the evaluation in quantitative and qualitative perspectives:
+<img src=".\results\loss_on_same_scene.png" alt="image-loss" style="zoom:90%;" /> <img src=".\results\acc_on_same_scene.png" alt="image-acc" style="zoom: 90%;" />
 
-- Quantitative Evaluation:
+Figure XX: (a) The training loss and validation loss show the training set maybe is small relative to the validation dataset.
 
-  - model parameters: the total size of the parameters used in the model
+​                   (b) The training accuracy and validation accuracy shows a fair good performance
+
+
+
+When we train our model with the images of different scenes, the training loss continues to decrease within the epochs in which the images are from same scenes. But the loss will jump sharply when the epoch switches to the images from different scenes. Such a phenomena is called catastrophic forgetting because the change of the training data is so significant that the model has to forget previous experience to fit the new data. However, the validation loss has a pretty much smooth trace without sharp jumping during its descending. 
+
+The training accuracy steps down in the first about 100 epochs but quickly rebounds and stays at a much higher level. Though the validation accuracy steadily climbs to the plateau and gets stable after epoch #110.
+
+<img src=".\results\train_loss_on_diff_scene.png" alt="img" style="zoom:40%;" /> <img src=".\results\val_loss_on_diff_scene.png" alt="img" style="zoom: 40%;" />
+
+
+
+<img src=".\results\acc_on_diff_scene.png" alt="image-20200606135119012" style="zoom: 90%;" />
+
+Figure XX: (a) The training loss has sharp jump while the training data change significantly. It indicates that the training set maybe is small relative to the validation dataset.             
+
+​                   (b) The validation loss shows a relative smooth descending trend.
+
+​                   (c) Both of the training accuracy and validation accuracy reach to a good performance while the training accuracy performs poorly at the early stage.
+
+
+
+**Testing Result**
+
+We test our model with Vimeo triplet sets and HEVC data. The table below shows the metrics of MSE, PSNR and SSIM we got when testing with 100 Vimeo triplet sets which are respectively from the same scene and different scenes.
+
+| 100 Vimeo Triplet Sets | MSE     | PSNR    | SSIM   |
+| ---------------------- | ------- | ------- | ------ |
+| **Same Scene**         | 51.3136 | 18.0673 | 0.6097 |
+| **Different Scenes**   | 36.9612 | 21.7903 | 0.7966 |
+
+The images below show the interpolated frames generated by our method. The upper right image is the interpolated frame based on the frames from the same scene and the upper left is the ground truth for it. The lower right one is the interpolated frame based on the frames from different scene and the lower left is the ground truth for it. As shown in the metric table above and the visual comparison below, the interpolation based on images of different scene gives a better outcome.
+
+<img src=".\results\origin_same_scene.png" alt="img" style="zoom:90%;" />    <img src=".\results\interpolated_same_scene.png" alt="img" style="zoom:90%;" />
+
+Figure XX  (a)  ground truth and the interpolated frame based on images from the same scene
+
+<img src=".\results\origin_diff_scene.png" alt="img" style="zoom:90%;" />  <img src=".\results\interpolated_diff_scene.png" alt="img" style="zoom:90%;" />
+
+​               (b) ground truth and the interpolated frame based on images from different scene
+
+## Discussion  
+### Issues we could avoid  
+As mentioned previously in training, intensive RAM consumption is a huge challenge to our training process, since each consecutive images set (3 frames in total) could take 9GB RAM memory. Therefore, our method only takes in 3 sets of images at a time, and switches to new images sets in the next training section. However, this could lead to an issue called Catastrophic Forgetting, also known as Catastrophic Interference, in Machine Learning. It generally happens when new data is feeded to train the model, while the data differs significantly from previous one. The issue arises because as the CNN model is trained by more data, the model will learn new data quickly and fit them into model faster than before. In the meantime, the model may forget what it has learnt before.
+
+Unfortunately, we could avoid this issue at beginning by simply pre-processing the training data. Intead of input 3 sets of images at each time, we could fetch slices of images from different images sets (from different scenes), so the input data could be diversified. 
+
+### Possible Improvement  
+#### Niklaus's later research
+Niklaus et al. have proposed a new method in their later research to optimize the memmory consumption. As shown in Figure ?, first, instead of generating a 2-D kernel for each pixel, their new network produces four 1-D kernels for each pixel.   
+
+![New framework in Video Frame Interpolation via Adaptive Separable Convolution](./proposal/niklaus_framework2.png)   
+
+This method is improved by reducing the dimension of the kernel, from one 2-dimension matrix K to two 1-dimension vectors, kh and kv, where they can be used to estimate K. Similar to Formular ?, kh and kv could be re-written as k1,h, k2,h and k1,v,  k2,v respectively. 
+Since we can rewrite the original formular to calculate I(x, y) to Formular ?, the formular to estimate kernal K is Formular ?. In conclusion, the space complexity of each kernel will be reduced from O(n^2) to O(2n).
+
   
-  - runtime: the runtime of frame interpolation on different resolution in the unit of second
-  
-  - MSE: Mean squared error
-  
-  - PSNR: Peak signal-to-noise ratio, the ratio between the maximum possible power of a signal and the power of corrupting noise that affects the fidelity of its representation.
-  
-  - SSIM: Structural similarity (SSIM) index is a method for predicting the perceived quality of various kinds of digital images and video. It is used for measuring the similarity between two images.
-  
-- Qualitative Evaluation:
-  
-  - Visual demonstration based on the image quality like the clear shape and the restored details.
-  
-
-Expected Outcomes:
-
-  - a demo of playing the interpolated videos with higher frame rate while comparing against the original video
-  - a report about our interpolation approach including its framework, implementation and evaluation
-
-## Risks
-
-In some cases the results generated by this method show the artifacts when the motion is larger than the size of the interpolation kernels. For example, the ghost effect could occur because the approach is not able to infer motion beyond the size of local kernels.
-
-The training time could also take longer since it somehow depends on what hardware resources like GPU we would get for this project.
-
-The graphics memory of GPU could be not enough for some data during training and testing.
+![Re-written Formular](./proposal/formula1.png)  
+![Kernel Estimation](./proposal/formula3.png)  
 
 ## Reference  
+- Ans, B., & Rousset, S. (1997). Avoiding catastrophic forgetting by coupling two reverberating neural networks. Comptes Rendus de l'Académie des Sciences-Series III-Sciences de la Vie, 320(12), 989-997.  
 - Bao, W., Lai, W. S., Ma, C., Zhang, X., Gao, Z., & Yang, M. H. (2019). Depth-aware video frame interpolation. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (pp. 3703-3712).
 - Cote, R. (2016, February 22). Motion Interpolation On TVs: Soap Opera Effect. Retrieved April 26, 2020, from https://www.rtings.com/tv/tests/motion/motion-interpolation-soap-opera-effect.
 - Epson Frame Interpolation. (n.d.). Retrieved April 26, 2020, from https://files.support.epson.com/docid/cpd5/cpd52094/source/adjustments/tasks/frame_interpolation.html.
