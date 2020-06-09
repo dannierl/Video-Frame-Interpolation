@@ -19,27 +19,6 @@ We also use EarlyStopping to increase our training speed. We monitor validation 
 
 # Final Report
 
---------------------------------------
-- Convolution Layers - Lin & Qiming
-
-  In our model, we use receptive block with size 79*79*6 as input. We use convolution layers and down-sampling layer to process the receptive block. The activation function we use is ReLu and we also use batch normalization to ensure the variance for both input node and output node is the same, which will help us to train our model better and faster. The first convolution layers will process the data to 32 x 73 x 73 size with 7 x 7 filter size and 1 x 1 stride size to get eigenvalues of the data. After the convolution layers, we use filter size 2 x 2 and stride size 2 x 2 for the down-sampling layer to reduce the dimensionality of the data. Repeat the step above to get output with 256 x 4 x 4. In order to get the final output with 41 x 82 x 1 x 1 size, we will proceed to reduce dimensionality to 1 x 1 by applying one convolution layers with 4 x 4 filter size and 1 x 1 stride size on it. After that, we use fully connected convolution layers with 1 x 1 filter size and 1 x 1 stride size to finally get our result kernel size 41 x 82 x 1 x 1.
-
-
-
-
---------------------------------------
-- Possible Improvement - Qiming
-
-  - More training on data
-
-    In this project, we perform 7 rounds of training; for each round, 3 sets of images from different scenes are used. In future research, more scenes are needed to apply model training.
-    We set patience as 10. That means the training will terminate only if there is no improvement in the monitor performance measure within the 10 epochs. This might not be the most ideal model since it might go up or down from one epoch to the next. What we really care about is that the general trend should be improving, so higher patience value will boost the accuracy of the model which can be conducted in future improvement.
-
-  - Xavier initialization
-    The variance of the activation value in training decreases layer by layer, which causes the gradient in backpropagation to also decrease layer by layer. To solve the disappearance of the gradient, it is necessary to avoid the reduction of the variance of the activation value. The ideal situation is that the output value of each layer maintains a Gaussian distribution. The basic idea of Xavier initialization is to keep the variance of the input and output consistent, so as to avoid all output values tending to zero.
-
-
-
 ## Introduction and diagram for the Video Frame Interpolation project
 When we watch movies and TV shows online today, most of them are 24fps format. As most of our screens like monitors or television are 60hz or even 120hz frame rate or more, use Figure 1 as example. We will see some common artifacts on the screen if we watch these videos on our screen. The reason for the artifacts occurring is because the low frame rate video will lose moving detail during the movement.
 
@@ -171,6 +150,16 @@ As mentioned previously in training, intensive RAM consumption is a huge challen
 Unfortunately, we could avoid this issue at beginning by simply pre-processing the training data. Intead of input 3 sets of images at each time, we could fetch slices of images from different images sets (from different scenes), so the input data could be diversified. 
 
 ### Possible Improvement  
+- More training on data
+  In this project, we perform 7 rounds of training; for each round, 3 sets of images from different scenes are used. In future research, more scenes are needed to apply model training.
+  We set patience as 10. That means the training will terminate only if there is no improvement in the monitor performance measure within the 10 epochs. This might not be the most ideal model since it might go up or down from one epoch to the next. What we really care about is that the general trend should be improving, so higher patience value will boost the accuracy of the model which can be conducted in future improvement.
+
+- Xavier initialization
+  The variance of the activation value in training decreases layer by layer, which causes the gradient in backpropagation to also decrease layer by layer. To solve the disappearance of the gradient, it is necessary to avoid the reduction of the variance of the activation value. The ideal situation is that the output value of each layer maintains a Gaussian distribution. The basic idea of Xavier initialization is to keep the variance of the input and output consistent, so as to avoid all output values tending to zero.
+
+### Convolution Layers
+In our model, we use receptive block with size 79*79*6 as input. We use convolution layers and down-sampling layer to process the receptive block. The activation function we use is ReLu and we also use batch normalization to ensure the variance for both input node and output node is the same, which will help us to train our model better and faster. The first convolution layers will process the data to 32 x 73 x 73 size with 7 x 7 filter size and 1 x 1 stride size to get eigenvalues of the data. After the convolution layers, we use filter size 2 x 2 and stride size 2 x 2 for the down-sampling layer to reduce the dimensionality of the data. Repeat the step above to get output with 256 x 4 x 4. In order to get the final output with 41 x 82 x 1 x 1 size, we will proceed to reduce dimensionality to 1 x 1 by applying one convolution layers with 4 x 4 filter size and 1 x 1 stride size on it. After that, we use fully connected convolution layers with 1 x 1 filter size and 1 x 1 stride size to finally get our result kernel size 41 x 82 x 1 x 1.   
+
 #### Niklaus's later research
 Niklaus et al. have proposed a new method in their later research to optimize the memmory consumption. As shown in Figure ?, first, instead of generating a 2-D kernel for each pixel, their new network produces four 1-D kernels for each pixel.   
 
