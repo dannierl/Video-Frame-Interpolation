@@ -9,43 +9,23 @@
 # Final Report
 
 --------------------------------------
-Last meeting
-### What is Batch Normalization?  
-  - [examples](https://www.programcreek.com/python/example/100588/keras.layers.normalization.BatchNormalization)  
-  - [library](https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization)  
-  - AdaConv P672  
-### Softmax: spacial softmax  
-  - AdaConv P672 
-
 - Convolution Layers - Lin & Qiming
-  # introducing cnn structure
-  # explain the reason of applying bn and spacial softmax
-  In a neural network, each hidden unit’s input distribution changes every time there is a parameter update in the previous layer. This is called the internal covariate shift. This makes training slow and requires a very small learning rate and a good parameter initialization. This problem is solved by normalizing the layer’s inputs over a mini-batch and this process is therefore called Batch Normalization. We also implement spatial softmax from TensorFlow API, a function returns the expected pixel locations of each feature map. It can be used as weights to compute the mean pixel locations of each feature.
+
+  In our model, we use receptive block with size 79*79*6 as input. We use convolution layers and down-sampling layer to process the receptive block. The activation function we use is ReLu and we also use batch normalization to ensure the variance for both input node and output node is the same, which will help us to train our model better and faster. The first convolution layers will process the data to 32 x 73 x 73 size with 7 x 7 filter size and 1 x 1 stride size to get eigenvalues of the data. After the convolution layers, we use filter size 2 x 2 and stride size 2 x 2 for the down-sampling layer to reduce the dimensionality of the data. Repeat the step above to get output with 256 x 4 x 4. In order to get the final output with 41 x 82 x 1 x 1 size, we will proceed to reduce dimensionality to 1 x 1 by applying one convolution layers with 4 x 4 filter size and 1 x 1 stride size on it. After that, we use fully connected convolution layers with 1 x 1 filter size and 1 x 1 stride size to finally get our result kernel size 41 x 82 x 1 x 1.
+
 
 
 
 --------------------------------------
 - Possible Improvement - Qiming
-how does __ make the model/training/project better
-We propose that further research should be undertaken in the following areas:
 
   - More training on data
-    # wrong explaination on the sets, Fenyang's comment
-    "we perform 7 rounds of training and in each round 3 sets of images from different scenes are used."
-    #too much phrase on Patience and not accurate, ask Lin
 
-    In this project, we perform 7 rounds of training; for each round, there are 3 sets of images from different scenes are used. In future research, more scenes are needed to apply and train in our model.
-    We set patience as 10. That means the training will terminate only if there is no improvement in the monitor performance measure during the 10 epochs. This might not be the most ideal model since it might go up or down from one epoch to the next. What we really care about is that the general trend should be improving, so the higher number of patience will boost the accuracy of a model which can be conducted in the future improvement.
+    In this project, we perform 7 rounds of training; for each round, 3 sets of images from different scenes are used. In future research, more scenes are needed to apply model training.
+    We set patience as 10. That means the training will terminate only if there is no improvement in the monitor performance measure within the 10 epochs. This might not be the most ideal model since it might go up or down from one epoch to the next. What we really care about is that the general trend should be improving, so higher patience value will boost the accuracy of the model which can be conducted in future improvement.
 
-
-  - Memory optimization
-    # rewrite whole thing
-    # set difference of pixel in two frames as a paramter, then filter out the pixels that is unchanged based on the parameter value you set.
-    #residue magnitude
-    ? not sure one matrix stands for a pixel
-
-   For every pair of patches we are trying to use to train our model, we can use these two patches to calculate the residues magnitude. Residues are calculated by using one patch minus the other patch. If the residues are too small, it means the small difference between the two patches. Then we do not need to train our model with this pair of patches. In this way, it can save training time and increase the model accuracy by training more data at the same time range.
-    
+  - Xavier initialization
+    The variance of the activation value in training decreases layer by layer, which causes the gradient in backpropagation to also decrease layer by layer. To solve the disappearance of the gradient, it is necessary to avoid the reduction of the variance of the activation value. The ideal situation is that the output value of each layer maintains a Gaussian distribution. The basic idea of Xavier initialization is to keep the variance of the input and output consistent, so as to avoid all output values tending to zero.
 
 
 
