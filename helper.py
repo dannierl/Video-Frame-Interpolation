@@ -16,6 +16,7 @@ class Helper(object):
         pass
 
     def load_imgs(self, dir_path="./dataset/BlowingBubbles_416x240_50/", start=0, end=0, mode=1, file_format="png"):
+
         """
         Group the images of the training set
         :param dir_path:  the directory path where the image set locates
