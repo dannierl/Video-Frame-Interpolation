@@ -133,26 +133,27 @@ Figure XX  (a)  ground truth and the interpolated frame based on images from the
 
 ## Discussion  
 ### Issues we could avoid  
-As mentioned previously in training, intensive RAM consumption is a huge challenge to our training process, since each consecutive images set (3 frames in total) could take 9GB RAM memory. Therefore, our method only takes in 3 sets of images at a time, and switches to new images sets in the next training section. However, this could lead to an issue called Catastrophic Forgetting, also known as Catastrophic Interference, in Machine Learning. It generally happens when new data is feeded to train the model, while the data differs significantly from previous one. The issue arises because as the CNN model is trained by more data, the model will learn new data quickly and fit them into model faster than before. In the meantime, the model may forget what it has learnt before.
+As mentioned previously, during the training, the intensive RAM consumption is a huge challenge to our training process, since each consecutive images set (3 frames in total) could take 9GB RAM memory. Therefore, our method only takes in 3 sets of images at a time, and switches to new images sets in the next training section. However, this could lead to an issue called Catastrophic Forgetting, also known as Catastrophic Interference, in Machine Learning. It generally happens when new data is fed to train the model, while the data differs significantly from the previous one. The issue arises because as the CNN model is trained by more data, the model will learn new data quickly and fit them into the model faster than before. In the meantime, the model may forget what it has learnt before.
 
-Unfortunately, we could avoid this issue at beginning by simply pre-processing the training data. Intead of input 3 sets of images at each time, we could fetch slices of images from different images sets (from different scenes), so the input data could be diversified. 
+Unfortunately, we could have avoided this issue at the beginning by simply pre-processing the training data. Instead of feeding 3 sets of images at each time, we could fetch slices of images from different image sets (from different scenes) so that the input data could be diversified. 
 
-### Possible Improvement  
-- More training on data  
+### Possible Improvement
+
+- More training data  
   In this project, we perform 7 rounds of training; for each round, 3 sets of images from different scenes are used. In future research, more data and scenes can be applied to model training.
-  Moreover, we set patience as 10, which means the training terminates if there is not enough improvement in the monitored validation loss within the 10 epochs. This model might not be ideal since it go up or down from one epoch to the next. However, what we care about is that the overall trend is improving, so higher patience value could boost the accuracy of the model, which can be conducted in future training.
+  Moreover, we set the patience as 10, which means the training will be terminated if there is no enough improvement in the monitored validation loss within 10 epochs. This model might not be ideal since it goes up or down from one epoch to the next. However, what we care about is that the overall trend is improving, so higher patience value could boost the accuracy of the model, which can be conducted in future training.
 
 - Xavier initialization  
   Xavier initialization is a method to ensure the variance of both input and output to be the same. The variance of the activation value in training decreases layer by layer, causing the gradient in backpropagation to fall layer by layer. To solve the gradient's disappearance, it is necessary to avoid the reduction of the variance of model weights. An ideal situation is that the output value of each layer maintains a Gaussian distribution. Therefore, the basic idea of Xavier initialization is to keep the variance of the input and output consistent, so as to avoid all output values tending to zero.
 
 ### Niklaus's later research
-Niklaus et al. have proposed a new method in their later research to optimize the memory consumption. As shown in Figure ?, first, instead of generating a 2-D kernel for each pixel, their new network produces four 1-D kernels for each pixel.   
+
+Niklaus et al. have proposed a new method in their later research to optimize the memory consumption. As shown in Figure ?, instead of generating a 2-D kernel for each pixel, their new network produces four 1-D kernels for each pixel.   
 
 ![New framework in Video Frame Interpolation via Adaptive Separable Convolution](./proposal/niklaus_framework2.png)   
 
-This method is improved by reducing the dimension of the kernel, from one 2-dimension matrix K to two 1-dimension vectors, kh, and kv, where they can be used to estimate K. Similar to Formula ?, kh and kv could be re-written as k1,h, k2,h and k1,v,  k2,v respectively. 
-Since we can re-write the original formula to calculate I(x, y) to Formular ?, the formula to estimate kernal K is Formular ?. In conclusion, each kernel's space complexity will be reduced from O(n^2) to O(2n).
-
+This method is improved by reducing the dimension of the kernel, from one 2-dimension matrix K to two 1-dimension vectors, kh and kv, where they can be used to estimate matrix K. Similar to Formula ?, kh and kv could be rewritten as k1,h, k2,h and k1,v,  k2,v respectively. 
+Since we can rewrite the original formula to calculate I(x, y) to Formula ?, the formula to estimate kernel K is Formula ?. In conclusion, each kernel's space complexity will be reduced from O(n^2) to O(2n).
 
 ![Re-written Formular](./proposal/formula1.png)  
 ![Kernel Estimation](./proposal/formula3.png)  
