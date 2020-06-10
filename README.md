@@ -148,7 +148,7 @@ Niklaus et al. have proposed a new method in their later research to optimize th
 
 ![New framework in Video Frame Interpolation via Adaptive Separable Convolution](./proposal/niklaus_framework2.png)   
 
-This method is improved by reducing the dimension of the kernel, from one 2-dimension matrix K to two 1-dimension vectors, kh, and kv, where they can be used to estimate K. Similar to Formular ?, kh and kv could be re-written as k1,h, k2,h and k1,v,  k2,v respectively. 
+This method is improved by reducing the dimension of the kernel, from one 2-dimension matrix K to two 1-dimension vectors, kh, and kv, where they can be used to estimate K. Similar to Formula ?, kh and kv could be re-written as k1,h, k2,h and k1,v,  k2,v respectively. 
 Since we can re-write the original formula to calculate I(x, y) to Formular ?, the formula to estimate kernal K is Formular ?. In conclusion, each kernel's space complexity will be reduced from O(n^2) to O(2n).
 
   
