@@ -1,23 +1,10 @@
-# Video-Frame-Interpolation
+# Video-Frame-Interpolation  
 
-## Description
+# Environment Setup  
 
-#### Environment Setup
-We train and test on Ubuntu 18.04 with Anaconda. We use one Quatro RTX 6000 and two RTX 2070 Super to train our model. Because all the video cards we use are RTX series, we can enable the RTX 16-bit optimization which makes our training faster. For the model itself, We use Keras to built our model. And for the training method, we use blocks and patches to train the model. Also, we use mini batch to reduce the memory cost and improve training efficiency. Three framesets will be used for taining at a time, which have 9 frames in total. Since we use blocks and patches, for every pixel on frame, we will have the bolcks and patches for it. So the block memory and patch memory will come to about 7.3 GB and 2 GB per frame, 22 GB and 6 GB for each set.
+# Running  
 
-#### Training and testing dataset 
-We use the triplet dataset from the Vimeo90K dataset to train our model. Vimeo90K is a large-scale, high-quality video dataset with 89,800 video clips downloaded from vimeo.com. The triplet dataset extracted from 15K selected video clips from Vimeo-90K. The triplet dataset has 73,171 triplets for training, where each triplet is a 3-frame sequence with a fixed resolution of 448 x 256 pixels. We train our network to predict the middle frame of each triplet. We also found Depth-Aware Video Frame Interpolation use this dataset as well. For the training data, we use 2/3 on training and 1/3 on validation.
-
-For the testing data, we use the triplet dataset and HEVC dataset. For the HEVC dataset, we use BlowingBubbles and BasketballDrill. Each part has 500 frames and we use 250 of these 500 frames for testing.
-
-#### Training method/configuration 
-To train our neural network, we initialized our neural network parameters using Xavier initialization method and use the AdaMax to optimize the proposed network. Xavier initialization is a method to ensure variance of both input and output to be the same. For AdaMax optimizer parameters, we set beta1 to 0.9, beta2 to 0.999, and learning rate to 0.001. We use 128 for the Mini-batch size to minimize the loss function. The maximum epochs number is set to 1000.
-
-We also use EarlyStopping to increase our training speed. We monitor validation loss with 1.0 for Min_delta and 10 for the patience. The model will save the best one to hdf5 file when early stopping is triggered.
-
-## Running
-
-# Final Report
+# Final Report  
 
 ## Introduction and diagram for the Video Frame Interpolation project
 When we watch movies and TV shows online today, most of them are 24fps format. As most of our screens like monitors or television are 60hz or even 120hz frame rate or more, use Figure 1 as example. We will see some common artifacts on the screen if we watch these videos on our screen. The reason for the artifacts occurring is because the low frame rate video will lose moving detail during the movement.
@@ -36,7 +23,7 @@ As you can see in Figure 3, the object moves from one frame to the next frame. T
 
  ![Generate frame with two frame](./proposal/pic3.jpg)
 
-For the test part, we will use 60fps frames videos to train our model as shown in Figure 4. Each video in the data set will be process in three set of rames:t, t+1, t+2, where t is from 1th frames to 58 frames. We will use the t frame and t+2 frame as input and t+1 frame as ground truth. The output frame will be used to compare with the original t+1 frame to accurately model.
+For the test part, we use 60fps frames videos to train our model as shown in Figure 4. Each video in the data set is process in three set of rames:t, t+1, t+2, where t is from 1th frames to 58 frames. We use the t frame and t+2 frame as input and t+1 frame as ground truth. The output frame is used to compare with the original t+1 frame to accurately model.
 
  ![Compare with the original frame](./proposal/pic2.jpg)
 
@@ -50,40 +37,34 @@ However, there is a disadvantage of generating large kernel for each pixel that 
 
 
 ## Steps 
-    - research paper 
-    - dataset 
-    - env/demo (implementation) 
-    - results analasys
-There are several steps towards making the project. First, We are going to read some related articles and look into previous works on video frame interpolation. We are currently working on bring tradition video coding algorithms into this project, and adapt them into machine learning algorithms. Then, we can decide which approach we are going to take to prediction inter-frame images.  
-Second, we need to decide which dataset we are going to use to train and test the neural network. Since we plan to convert lower FPS videos to 60FPS or 90FPS, we need to find some native 60FPS and 90 FPS video or corresponding picture frames.  
-In addition, we are going to implement the research method of Niklaus et al. from scratch using Keras library on Ubuntu 18.04 with Anaconda. Also, we will develop a demo for quantitative analysis and generate videos for class presentation.  
-Finally, we will run experiment on our demo against test data, or possibly previous research, such as Sepconv Slomo. Metrics including MSE, PSNR, and SSIM will be used to quantify the results and evaluate the performance. A final report will be conducted to summarize our experience results. 
+
+There are several steps towards making the project. First, We read some related articles and look into previous works on video frame interpolation. We are currently working on bring tradition video coding algorithms into this project, and adapt them into machine learning algorithms. Then, we can decide which approach we take to prediction inter-frame images.  
+Second, we need to decide which dataset we use to train and test the neural network. Since we plan to convert lower FPS videos to 60FPS or 90FPS, we need to find some native 60FPS and 90 FPS video or corresponding picture frames.  
+In addition, we implement the research method of Niklaus et al. from scratch using Keras library on Ubuntu 18.04 with Anaconda. Also, we develop a demo for quantitative analysis and generate videos for class presentation.  
+Finally, we run experiment on our demo against test data, or possibly previous research, such as Sepconv Slomo. Metrics including MSE, PSNR, and SSIM are used to quantify the results and evaluate the performance. A final report is conducted to summarize our experience results. 
 
 ## Proposed Framework
-We will develop a deep neural network based on the Adaptive Convolution Network of Niklaus et al. As illustrated in Figure ?, the convolution layers will take in two receptive fields, R1 and R2, from two consecutive frames respectively.  
+We develop a deep neural network based on the Adaptive Convolution Network of Niklaus et al. As illustrated in Figure ?, the convolution layers take in two receptive fields, R1 and R2, from two consecutive frames respectively.  
 ![Proposed Framework](./proposal/framework.png)
-The convolutional model will be trained to output a kernal K, which will be used with the corresponding patches, P1 and P2,  centered in receptive fields, to compute the output pixel of the interpolated frame I_hat. The formula for computing the output pixel is shown as below:   
+The convolutional model is trained to output a kernal K, which is used with the corresponding patches, P1 and P2,  centered in receptive fields, to compute the output pixel of the interpolated frame I_hat. The formula for computing the output pixel is shown as below:   
 
 ![Formula for computing the interpolation pixel I_hat(x, y)](./proposal/formula0.png)
 
 ## Dataset
-We will be training and testing our model using 720p video images from Middlebury dataset as Niklaus et al. and DAIN did. It will allow us to do similar experiment or even comparison if possible. If more data are needed for training, we will download as many 720p video as needed via YouTube.  
+We train and test our model using 720p video images from Middlebury dataset as Niklaus et al. and DAIN did. It allows us to do similar experiment or even comparison if possible. If more data are needed for training, we download as many 720p video as needed via YouTube.  
 
-## Schedule
-    - important dates
-For the project schedule, we have planned the following dates and events at this moment. However, schedule may be slightly changed in the future according to the circumstances.
-- April 23 (Thursday): Meeting and review on initial proposal
-- April 27 (Monday): Initial proposal due
-- May 7 (Thursday): Finish reading Chapter 6, 10, and 11 of the textbook. Daniel and Wang should finish reading the DAIN and Sepconv Slomo article and present it to the rest of the group
-- May 7 (Thursday): Meeting on final proposal 
-- May 9 (Saturday): Meeting and review on final proposal
-- May 11 (Monday): Final proposal due
-- May 11 (Monday): Meeting on coding plan
-- May 24 (Sunday): Final code review
-- May 26 (Tuesday): Final report review
-- May 30 (Saturday): Presentation rehearsal
-- June 1 (Monday): Presentation
+## Training Environment
+We train and test on Ubuntu 18.04 with Anaconda. We use one Quatro RTX 6000 and two RTX 2070 Super to train our model. Because all the video cards we use are RTX series, we can enable the RTX 16-bit optimization which makes our training faster. For the model itself, We use Keras to built our model. And for the training method, we use blocks and patches to train the model. Also, we use mini batch to reduce the memory cost and improve training efficiency. Three framesets are used for taining at a time, which have 9 frames in total. Since we use blocks and patches, for every pixel on frame, we have the bolcks and patches for it. So the block memory and patch memory come to about 7.3 GB and 2 GB per frame, 22 GB and 6 GB for each set.
 
+## Training and testing dataset 
+We use the triplet dataset from the Vimeo90K dataset to train our model. Vimeo90K is a large-scale, high-quality video dataset with 89,800 video clips downloaded from vimeo.com. The triplet dataset extracted from 15K selected video clips from Vimeo-90K. The triplet dataset has 73,171 triplets for training, where each triplet is a 3-frame sequence with a fixed resolution of 448 x 256 pixels. We train our network to predict the middle frame of each triplet. We also found Depth-Aware Video Frame Interpolation use this dataset as well. For the training data, we use 2/3 on training and 1/3 on validation.
+
+For the testing data, we use the triplet dataset and HEVC dataset. For the HEVC dataset, we use BlowingBubbles and BasketballDrill. Each part has 500 frames and we use 250 of these 500 frames for testing.
+
+## Training method/configuration 
+To train our neural network, we initialized our neural network parameters using Xavier initialization method and use the AdaMax to optimize the proposed network. Xavier initialization is a method to ensure variance of both input and output to be the same. For AdaMax optimizer parameters, we set beta1 to 0.9, beta2 to 0.999, and learning rate to 0.001. We use 128 for the Mini-batch size to minimize the loss function. The maximum epochs number is set to 1000.
+
+We also use EarlyStopping to increase our training speed. We monitor validation loss with 1.0 for Min_delta and 10 for the patience. The model save the best one to hdf5 file when early stopping is triggered.
 
 ## Experimental Results and Analysis
 **Training Result**
