@@ -28,22 +28,22 @@ For the test part, we use 60FPS frames videos to train our model, as shown in Fi
  ![Compare with the original frame](./proposal/pic2.jpg)
 
 ## How it is related to Deep Learning for CV 
-Traditional methods use optical flow for frame interpolation. However, in general, optical flow cannot be calculated from images with ambiguity (known as the aperture problem[7] in computer vision); additional constraints are needed to find a unique solution. Therefore, the quality of the interpolation heavily depends on the accuracy of the flow estimation. It is important to note that this work implements the work of Niklaus et al.[1] in Adaptive Separable Convolution, which claims high-quality results on the video frame interpolation task. We design a convolutional neural network to estimate a proper convolutional kernel to synthesize each output pixel in the interpolated images. Instead of implementing optical flow-based interpolation, our method captures both the motion and interpolation coefficients, generates kernel through convolution layers, and synthesizes an intermediate video frame. 
+Traditional methods use optical flow for frame interpolation. However, in general, optical flow cannot be calculated from images with ambiguity (known as the aperture problem[7] in computer vision); additional constraints are needed to find a unique solution. Therefore, the quality of the interpolation heavily depends on the accuracy of the flow estimation. It is important to note that this work implements the work of Niklaus et al.[1] in Adaptive Separable Convolution, which claims high-quality results on the video frame interpolation task. We design a convolutional neural network to estimate a proper convolutional kernel to synthesize each output pixel in the interpolated images. Instead of implementing optical flow-based interpolation, our method captures both the motion and interpolation coefficients, generates the kernel through convolution layers, and synthesizes an intermediate video frame. 
 
-Our neural network can be trained using widely available video data, which provides a sufficiently large training dataset. The main advantages of our method are: 
+Our neural network can be trained using widely available video data which provides a sufficiently large training dataset. The main advantages of our method are: 
 1. It achieves better transformation learning and better results; 
-2. It learns models can learn on their own, while traditional video compression work requires a lot of manual design. 
-However, there is a disadvantage of generating large kernel for each pixel that it requires an enormous amount of graphics memory.
+2. Traditional video CODEC requires a lot of manual design on algorithms, while our model provides the ability to automatically learn without being explicitly programmed. 
+However, there is a disadvantage of generating a large kernel for each pixel that it requires an enormous amount of graphics memory.
 
+## Steps
 
-## Steps 
-
-There are several steps towards making the project. First, We read some related articles and look into previous works on video frame interpolation. We brought traditional video coding algorithms into this project, and adapt them into machine learning algorithms. Then, we can decide which approach we take to predict inter-frame images.  
-Second, we need to decide which dataset we use to train and test the neural network. Since we plan to convert lower FPS videos to 60FPS or 90FPS, we need to find some native 60FPS and 90 FPS video or corresponding picture frames.  
-Besides, we implement the research method of Niklaus et al. from scratch using Keras library on Ubuntu 18.04 with Anaconda. Also, we develop a demo for quantitative analysis and generate videos for the class presentation.  
-Finally, we run an experiment on our demo against test data, or possibly previous research, such as Sepconv Slomo. Metrics, including MSE, PSNR, and SSIM, are used to quantify the results and evaluate the performance. A final report is conducted to summarize our experience results. 
+There are several steps towards making the project. First, We read some related articles and look into previous works on video frame interpolation. We bring traditional video coding algorithms into this project, and adapt them into machine learning algorithms. Then, we can decide which approach we can take to predict inter-frame images.  
+Second, we need to decide which dataset to be used to train and test the neural network. Since we plan to convert lower FPS videos to 60FPS or 90FPS, we need to find some native 60FPS and 90 FPS video or corresponding picture frames.  
+Meanwhile, we implement the research method of Niklaus et al. from scratch by using Keras library on Ubuntu 18.04 with Anaconda. Also, we output image demos from the prediction model for quantitative analysis and then generate videos for visual comparison and the in-class presentation.  
+Finally, we run an experiment on our predicted frames. The metrics including MSE, PSNR, and SSIM, are used to quantify the results and evaluate the performance. A final report is conducted to summarize our experience results. 
 
 ## Proposed Framework
+
 We develop a deep neural network based on the Adaptive Convolution Network of Niklaus et al. As illustrated in Figure ?, the convolution layers take in two receptive fields, R1 and R2, from two consecutive frames, respectively.  
 ![Proposed Framework](./proposal/framework.png)
 The convolutional model is trained to output a kernel K, which is used with the corresponding patches, P1 and P2,  centered in receptive fields, to compute the interpolated frame's output pixel I_hat. The formula for calculating the output pixel is shown as below:   
