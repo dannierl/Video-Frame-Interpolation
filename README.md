@@ -44,15 +44,15 @@ Finally, we run an experiment on our predicted frames. The metrics including MSE
 
 ## Proposed Framework
 
-We develop a deep neural network based on the Adaptive Convolution Network of Niklaus et al. As illustrated in Figure ?, the convolution layers take in two receptive fields, R1 and R2, from two consecutive frames, respectively.  
+We develop a deep neural network based on the Adaptive Convolution Network of Niklaus et al. As illustrated in Figure ?, the convolution layers take in two receptive fields, R1 and R2, from two consecutive frames respectively.  
 ![Proposed Framework](./proposal/framework.png)
 The convolutional model is trained to output a kernel K, which is used with the corresponding patches, P1 and P2,  centered in receptive fields, to compute the interpolated frame's output pixel I_hat. The formula for calculating the output pixel is shown as below:   
 
 ![Formula for computing the interpolation pixel I_hat(x, y)](./proposal/formula0.png)
 
 ## Convolution Layers
-As in Figure?, we use an identical model as Niklaus et al. use in their paper, we use two receptive blocks with size 79 x 79 x 3 combined to 79 x 79 x 6 as input. 
-In each convolution layer, we use ReLu as our activation function, as well as batch normalization to ensure the variances for both input and output nodes are the same. Each convolution layer is paired with a max-pooling layer with a ReLu activation, a 2 x 2 filter, and a 2 x 2 stride. In order to get the final output with 41 x 82 x 1 x 1 size, we finally use a fully connected layer with spacial softmax activation to get the output kernel with size 41 x 82 x 1 x 1.   
+As in Figure?, we use an identical model like the one Niklaus et al. used in their paper. We also use two receptive blocks with size 79 x 79 x 3 combined to 79 x 79 x 6 as input. 
+In each convolution layer, we use ReLu as our activation function, as well as batch normalization to ensure the variances for both input and output nodes are the same. Each convolution layer is paired with a max-pooling layer using a ReLu activation, a 2 x 2 filter, and a 2 x 2 stride. In order to get the final output with 41 x 82 x 1 x 1 size, we finally use a fully connected layer with spatial softmax activation to get the output kernel with size 41 x 82 x 1 x 1.   
 
 ![Convolution Layers](./proposal/layers.png) 
 
