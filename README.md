@@ -50,21 +50,27 @@ The convolutional model is trained to output a kernal K, which is used with the 
 
 ![Formula for computing the interpolation pixel I_hat(x, y)](./proposal/formula0.png)
 
+## Convolution Layers
+As in Figure?, we use an identical model as Niklaus et al. use in their paper, we use two receptive blocks with size 79 x 79 x 3 combined to 79 x 79 x 6 as input. 
+In each convolution layer, we use ReLu as our activation function, as well as batch normalization to ensure the variances for both input node and output node are the same. Each convolution layer is paired with a max pooling layer, which has a ReLu activation, a 2 x 2 filter and a 2 x 2 stride. In order to get the final output with 41 x 82 x 1 x 1 size, we finally use a fully connected layer with spacial softmax activation to get the output kernel with size 41 x 82 x 1 x 1.   
+
 ## Dataset
 We train and test our model using 720p video images from Middlebury dataset as Niklaus et al. and DAIN did. It allows us to do similar experiment or even comparison if possible. If more data are needed for training, we download as many 720p video as needed via YouTube.  
 
 ## Training Environment
-We train and test on Ubuntu 18.04 with Anaconda. We use one Quatro RTX 6000 and two RTX 2070 Super to train our model. Because all the video cards we use are RTX series, we can enable the RTX 16-bit optimization which makes our training faster. For the model itself, We use Keras to built our model. And for the training method, we use blocks and patches to train the model. Also, we use mini batch to reduce the memory cost and improve training efficiency. Three framesets are used for taining at a time, which have 9 frames in total. Since we use blocks and patches, for every pixel on frame, we have the bolcks and patches for it. So the block memory and patch memory come to about 7.3 GB and 2 GB per frame, 22 GB and 6 GB for each set.
+We train and test on Ubuntu 18.04 with Anaconda. We use one Quatro RTX 6000 and two RTX 2070 Super to train our model. Because all the video cards we use are RTX series, we can enable the RTX 16-bit optimization which makes our training faster. We implement the model using Keras. The project also works on Powershell in Windows 10.
 
 ## Training and testing dataset 
 We use the triplet dataset from the Vimeo90K dataset to train our model. Vimeo90K is a large-scale, high-quality video dataset with 89,800 video clips downloaded from vimeo.com. The triplet dataset extracted from 15K selected video clips from Vimeo-90K. The triplet dataset has 73,171 triplets for training, where each triplet is a 3-frame sequence with a fixed resolution of 448 x 256 pixels. We train our network to predict the middle frame of each triplet. We also found Depth-Aware Video Frame Interpolation use this dataset as well. For the training data, we use 2/3 on training and 1/3 on validation.
 
-For the testing data, we use the triplet dataset and HEVC dataset. For the HEVC dataset, we use BlowingBubbles and BasketballDrill. Each part has 500 frames and we use 250 of these 500 frames for testing.
+For the testing data, we use both the triplet dataset and HEVC dataset. More specifically for the HEVC dataset, we use BlowingBubbles and BasketballDrill datasets to evaluate our model and synthesize the final 50FPS video. Each of the dataset has 500 frames and we use 250 of these 500 frames as the test input.
 
 ## Training method/configuration 
-To train our neural network, we initialized our neural network parameters using Xavier initialization method and use the AdaMax to optimize the proposed network. Xavier initialization is a method to ensure variance of both input and output to be the same. For AdaMax optimizer parameters, we set beta1 to 0.9, beta2 to 0.999, and learning rate to 0.001. We use 128 for the Mini-batch size to minimize the loss function. The maximum epochs number is set to 1000.
+In our neural network, we initialize our model parameters using random initialization and AdaMax optimizer to train the proposed network. For AdaMax optimizer parameters, we set beta1 to 0.9, beta2 to 0.999, and learning rate to 0.001. We use 128 for the Mini-batch size to minimize the loss function. The maximum epochs number is set to 1000.
 
-We also use EarlyStopping to increase our training speed. We monitor validation loss with 1.0 for Min_delta and 10 for the patience. The model save the best one to hdf5 file when early stopping is triggered.
+We also use EarlyStopping to determine the actual number of epochs in each round of training. We monitor validation loss with 1.0 for Min_delta and 10 epochs for the patience. The program saves the best model weights to hdf5 file when EarlyStopping is triggered.
+
+As for the training method, we trainsform images to blocks and patches to train the model. Also, we use mini batch to reduce the memory cost and improve training efficiency. Three framesets are used for training at a time, which have 9 frames in total. Since we have generated a block and a patch for every pixel on a frame, the block memory and patch memory comes to a high cost, which is about 7.3 GB and 2 GB per frame, and totally 22 GB and 6 GB per set.
 
 ## Experimental Results and Analysis
 **Training Result**
@@ -131,17 +137,14 @@ As mentioned previously in training, intensive RAM consumption is a huge challen
 Unfortunately, we could avoid this issue at beginning by simply pre-processing the training data. Intead of input 3 sets of images at each time, we could fetch slices of images from different images sets (from different scenes), so the input data could be diversified. 
 
 ### Possible Improvement  
-- More training on data
-  In this project, we perform 7 rounds of training; for each round, 3 sets of images from different scenes are used. In future research, more scenes are needed to apply model training.
-  We set patience as 10. That means the training will terminate only if there is no improvement in the monitor performance measure within the 10 epochs. This might not be the most ideal model since it might go up or down from one epoch to the next. What we really care about is that the general trend should be improving, so higher patience value will boost the accuracy of the model which can be conducted in future improvement.
+- More training on data  
+  In this project, we perform 7 rounds of training; for each round, 3 sets of images from different scenes are used. In future research, more data and scenes can be appled to model training.
+  Moreover, we set patience as 10 which means the training terminates if there is not enough improvement in the monitored validation loss within the 10 epochs. This might not be the most ideal model since it go up or down from one epoch to the next. However, what we really care about is that the overall trend is improving, so higher patience value could boost the accuracy of the model which can be conducted in future training.
 
-- Xavier initialization
-  The variance of the activation value in training decreases layer by layer, which causes the gradient in backpropagation to also decrease layer by layer. To solve the disappearance of the gradient, it is necessary to avoid the reduction of the variance of the activation value. The ideal situation is that the output value of each layer maintains a Gaussian distribution. The basic idea of Xavier initialization is to keep the variance of the input and output consistent, so as to avoid all output values tending to zero.
+- Xavier initialization  
+  Xavier initialization is a method to ensure variance of both input and output to be the same. The variance of the activation value in training decreases layer by layer, which also causes the gradient in backpropagation to decrease layer by layer. To solve the disappearance of the gradient, it is necessary to avoid the reduction of the variance of model weights. An ideal situation is that the output value of each layer maintains a Gaussian distribution. Therefore, the basic idea of Xavier initialization is to keep the variance of the input and output consistent, so as to avoid all output values tending to zero.
 
-### Convolution Layers
-In our model, we use receptive block with size 79*79*6 as input. We use convolution layers and down-sampling layer to process the receptive block. The activation function we use is ReLu and we also use batch normalization to ensure the variance for both input node and output node is the same, which will help us to train our model better and faster. The first convolution layers will process the data to 32 x 73 x 73 size with 7 x 7 filter size and 1 x 1 stride size to get eigenvalues of the data. After the convolution layers, we use filter size 2 x 2 and stride size 2 x 2 for the down-sampling layer to reduce the dimensionality of the data. Repeat the step above to get output with 256 x 4 x 4. In order to get the final output with 41 x 82 x 1 x 1 size, we will proceed to reduce dimensionality to 1 x 1 by applying one convolution layers with 4 x 4 filter size and 1 x 1 stride size on it. After that, we use fully connected convolution layers with 1 x 1 filter size and 1 x 1 stride size to finally get our result kernel size 41 x 82 x 1 x 1.   
-
-#### Niklaus's later research
+### Niklaus's later research
 Niklaus et al. have proposed a new method in their later research to optimize the memmory consumption. As shown in Figure ?, first, instead of generating a 2-D kernel for each pixel, their new network produces four 1-D kernels for each pixel.   
 
 ![New framework in Video Frame Interpolation via Adaptive Separable Convolution](./proposal/niklaus_framework2.png)   
