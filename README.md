@@ -7,23 +7,23 @@
 ## Final Report  
 
 ## Introduction and diagram for the Video Frame Interpolation project
-When we watch movies and TV shows online today, most of them are in 24FPS format. As most of our screens like monitors or televisions are in 60FPS or even 120FPS or higher. Figure 1 shows am example of video interpolation. We will see some common artifacts on the screen if we watch these videos on our screen. The reason for the artifacts occurring is because low frame rate video will lose details during the movement.
+When we watch movies and TV shows online today, most of them are at 24FPS format. As most of our screens like monitors or televisions are in 60FPS or even 120FPS or higher. Figure 1 shows an example of video interpolation. We will see some common artifacts on the screen if we watch these videos on our screen. The reason for the artifacts occurring is because low frame rate video will lose details during the movement.
 
  ![Motion Interpolation](./proposal/pic1.png)
 
-To avoid these common artifacts, we want to create a program that is powered by Video Frame Interpolation technology to convert 24FPS video to 60FPS video. Video Frame Interpolation is a technology that aims to generate non-existent frames in-between the original frames. The usage of this technology can be used in not only frame rate up-conversion but also the slow-motion video. 
+To avoid these common artifacts, we want to create a program that is powered by Video Frame Interpolation technology to convert 24FPS video to 60FPS one. Video Frame Interpolation is a technology that aims to generate non-existent frames in-between the original frames. The usage of this technology can be used in not only frame rate up-conversion but also the slow-motion video. 
 
-Traditional video frame interpolation methods use estimated optical flow to predict the movement of an object between input frames and synthesizing intermediate frames. However, the performance varies depending on the quality of the optical flow. Furthermore, the optical flow method is still challenged to generate high-quality frames due to large motion and occlusions. 
+Traditional video frame interpolation methods use estimated optical flow to predict the movement of an object between input frames and synthesized intermediate frames. However, the performance varies depending on the quality of the optical flow. Furthermore, the optical flow method is still challenged to generate high-quality frames due to large motion and occlusions. 
 
 ![Different between triditional method and kernal based method](./proposal/pic4.png)
 
-Since this project aims to produce a high-quality frame between existing frames, we decide to use the kernel-based method to predict the frame. This method is to estimate spatially-adaptive convolution kernels for each output pixel and convolve the kernels with the input frames to generate a new frame. Specifically, for each pixel in the interpolated frame, the method takes two receptive field patches centered at that pixel as input and estimates a convolution kernel. The difference between these two methods is shown in Figure 2.
+Since this project aims to produce a high-quality frame between existing frames, we decide to use the kernel-based method to predict the frame. This method is to estimate spatially-adaptive convolution kernels for each output pixel and convolve the kernels with the input frames to generate a new frame. Specifically, for each pixel in the interpolated frame, this method takes two receptive field patches centered at that pixel as input and estimates a convolution kernel. The difference between these two methods is shown in Figure 2.
 
-As you can see in Figure 3, the object moves from one frame to the next frame. The model use kernel to draw the missing frame and then insert it in-between these two frames. The CNN network generates the missing frame with the other two frames as input.
+As you can see in Figure 3, the object moves from one frame to the next frame. The model uses the kernel to draw the missing frame and then insert it in-between these two frames. The CNN network generates the missing frame with the other two frames as input.
 
  ![Generate frame with two frame](./proposal/pic3.jpg)
 
-For the test part, we use 60fps frames videos to train our model, as shown in Figure 4. Each video in the data set is processed in three sets of frames:t, t+1, t+2, where t is from 1st frames to 58 frames. We use the frame t and frame t+2 as input and frame t+1 as ground truth. The output frame is used to compare with the original frame t+1 to accurately model.
+For the test part, we use 60FPS frames videos to train our model, as shown in Figure 4. Each video in the data set is processed in three sets of frames: t, t+1, t+2, where t is from frame 1 to frame 58. We use the frame t and frame t+2 as input and frame t+1 as ground truth. The output frame is used to compare with the original frame t+1 to train the model.
 
  ![Compare with the original frame](./proposal/pic2.jpg)
 
@@ -151,7 +151,7 @@ Niklaus et al. have proposed a new method in their later research to optimize th
 This method is improved by reducing the dimension of the kernel, from one 2-dimension matrix K to two 1-dimension vectors, kh, and kv, where they can be used to estimate K. Similar to Formula ?, kh and kv could be re-written as k1,h, k2,h and k1,v,  k2,v respectively. 
 Since we can re-write the original formula to calculate I(x, y) to Formular ?, the formula to estimate kernal K is Formular ?. In conclusion, each kernel's space complexity will be reduced from O(n^2) to O(2n).
 
-  
+
 ![Re-written Formular](./proposal/formula1.png)  
 ![Kernel Estimation](./proposal/formula3.png)  
 
