@@ -50,7 +50,7 @@ class adaConv(object):
             K.set_epsilon(1e-4) 
 
         self.debug = debug
-        if debug:
+        if self.debug:
             print("ada_conv initiated...")
 
     def ada_conv_predict(self, images, mode = 'default'):

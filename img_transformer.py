@@ -14,7 +14,7 @@ class ImgTransformer(object):
 
     def __init__(self, debug=False):
         self.debug = debug
-        if debug:
+        if self.debug:
             print("img_transformer created...")
 
     def image_padding(self, image, pad_size, mode='constant', constant_values=0):
