@@ -16,6 +16,7 @@ class Helper(object):
         pass
 
     def load_imgs(self, dir_path="./dataset/BlowingBubbles_416x240_50/", start=0, end=0, mode=1, file_format="png"):
+
         """
         Group the images of the training set
         :param dir_path:  the directory path where the image set locates
@@ -57,6 +58,13 @@ class Helper(object):
         return np.array(train_set)
 
     def load_image(self, ph="./dataset/vimeo_triplet/", start=1, end=1):
+        """
+        Load the images of the training set
+        :param ph:  the directory path where the image set locates
+        :param start:  the start index of the training set image
+        :param end:  the ending index of the training set image
+        :return: a numpy array of images
+        """
         # expect path: "./dataset/vimeo_triplet/"
         if not(path.isdir(ph)):
             print("ERROR: PATH COULD NOT FOUND!")
@@ -76,6 +84,14 @@ class Helper(object):
         return np.asarray(imgs)
 
     def save_image(self, image=[], index=1, ph="./saved/"):
+
+        """
+        Save the images of the training set
+        :param image:  the image to be saved
+        :param ph:  the directory path where the image set will be saved
+        :param index:  the start index of the image
+        """
+
         # expect image shape: (1,1,256,448,3)
         if not(path.isdir(ph)):
             os.mkdir(ph)
@@ -86,6 +102,10 @@ class Helper(object):
         cv2.destroyAllWindows()
 
     def plot_image(self, image):
+        """
+        Show the images from input
+        :param image:  the image will be show by the function
+        """
         cv2.imshow('', image)
         cv2.destroyAllWindows()
 
@@ -127,6 +147,10 @@ class Helper(object):
         print("History saved in ", hist_csv_file)
 
     def plot_from_csv(self, csv_path='./dummy.csv'):
+        """
+        Show the images from csv file
+        :param csv_path:  the directory path where the csv file locates
+        """
         if not path.exists(csv_path):
             print("ERROR: CSV FILE CAN NOT BE FOUND -- ", csv_path)
 

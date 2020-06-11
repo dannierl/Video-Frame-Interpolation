@@ -1,112 +1,110 @@
-# Video-Frame-Interpolation
+# Video-Frame-Interpolation  
 
-## Description
+## Environment Setup  
 
-#### Environment Setup
-We train and test on Ubuntu 18.04 with Anaconda. We use one Quatro RTX 6000 and two RTX 2070 Super to train our model. Because all the video cards we use are RTX series, we can enable the RTX 16-bit optimization which makes our training faster. For the model itself, We use Keras to built our model. And for the training method, we use blocks and patches to train the model. Also, we use mini batch to reduce the memory cost and improve training efficiency. Three framesets will be used for taining at a time, which have 9 frames in total. Since we use blocks and patches, for every pixel on frame, we will have the bolcks and patches for it. So the block memory and patch memory will come to about 7.3 GB and 2 GB per frame, 22 GB and 6 GB for each set.
+## Running  
 
-#### Training and testing dataset 
-We use the triplet dataset from the Vimeo90K dataset to train our model. Vimeo90K is a large-scale, high-quality video dataset with 89,800 video clips downloaded from vimeo.com. The triplet dataset extracted from 15K selected video clips from Vimeo-90K. The triplet dataset has 73,171 triplets for training, where each triplet is a 3-frame sequence with a fixed resolution of 448 x 256 pixels. We train our network to predict the middle frame of each triplet. We also found Depth-Aware Video Frame Interpolation use this dataset as well. For the training data, we use 2/3 on training and 1/3 on validation.
+## Final Report  
 
-For the testing data, we use the triplet dataset and HEVC dataset. For the HEVC dataset, we use BlowingBubbles and BasketballDrill. Each part has 500 frames and we use 250 of these 500 frames for testing.
 
-#### Training method/configuration 
-To train our neural network, we initialized our neural network parameters using Xavier initialization method and use the AdaMax to optimize the proposed network. Xavier initialization is a method to ensure variance of both input and output to be the same. For AdaMax optimizer parameters, we set beta1 to 0.9, beta2 to 0.999, and learning rate to 0.001. We use 128 for the Mini-batch size to minimize the loss function. The maximum epochs number is set to 1000.
+## Introduction
+When we watch movies and TV shows online today, most of them are at 24FPS format. As most of our screens like monitors or televisions are in 60FPS or even 120FPS or higher. Figure 1 shows an example of video interpolation. We will see some common artifacts on the screen if we watch these videos on our screen. The reason for the artifacts occurring is because low frame rate video will lose details during the movement.
 
-We also use EarlyStopping to increase our training speed. We monitor validation loss with 1.0 for Min_delta and 10 for the patience. The model will save the best one to hdf5 file when early stopping is triggered.
 
-## Running
+ ![Figure 1: Motion Interpolation](./proposal/pic1.png)
 
-# Final Report
+To avoid these common artifacts, we want to create a program that is powered by Video Frame Interpolation technology to convert 24FPS video to 60FPS one. Video Frame Interpolation is a technology that aims to generate non-existent frames in-between the original frames. The usage of this technology can be used in not only frame rate up-conversion but also the slow-motion video. 
 
-## Introduction and diagram for the Video Frame Interpolation project
-When we watch movies and TV shows online today, most of them are 24fps format. As most of our screens like monitors or television are 60hz or even 120hz frame rate or more, use Figure 1 as example. We will see some common artifacts on the screen if we watch these videos on our screen. The reason for the artifacts occurring is because the low frame rate video will lose moving detail during the movement.
+Traditional video frame interpolation methods use estimated optical flow to predict the movement of an object between input frames and synthesized intermediate frames. However, the performance varies depending on the quality of the optical flow. Furthermore, the optical flow method is still challenged to generate high-quality frames due to large motion and occlusions. 
 
- ![Motion Interpolation](./proposal/pic1.png)
+![Figure 2: Different between triditional method and kernal based method](./proposal/pic4.png)
 
-To avoid these common artifacts we want to create a program that is powered by Video Frame Interpolation technology to convert 24fps video to 60fps video. This is a technology that aims to generate non-existent frames in-between the original frames. The usage of this technology can be used not only frame rate up-conversion but also the slow-motion video. 
 
-Triditional video frame interpolation methods are using the estimate optical flow to predict the movement of the object between input frames and synthesizing intermediate frames. However the performance will be vary depends the quality of optical flow. Futhermore, the optical flow methods still challenging to generate high-quality frames due to large motion and occlusions. 
+Since this project aims to produce a high-quality frame between existing frames, we decide to use the kernel-based method to predict the frame. This method is to estimate spatially-adaptive convolution kernels for each output pixel and convolve the kernels with the input frames to generate a new frame. Specifically, for each pixel in the interpolated frame, this method takes two receptive field patches centered at that pixel as input and estimates a convolution kernel. The difference between these two methods is shown in Figure 2.
 
-![Different between triditional method and kernal based method](./proposal/pic4.png)
 
-Since the goal of this project is to produce high-quality frame between existing frames, we decide to use the kernal based method to predict the frame. This method is to estimate spatially-adaptive convolution kernels for each output pixel and convolve the kernels with the input frames to generate a new frame. Specifically, for each pixel in the interpolated frame, the method takes two receptive field patches centered at that pixel as input and estimates a convolution kernel. The difference between these two method are shown as Figure 2.
+As you can see in Figure 3, the object moves from one frame to the next frame. The model uses the kernel to draw the missing frame and then insert it in-between these two frames. The CNN network generates the missing frame with the other two frames as input.
 
-As you can see in Figure 3, the object moves from one frame to the next frame. The model use kernal to draw the missing frame and then insert it in-between these two frames. The missing frame is generated by the CNN network with the other two frames as input.
+ ![Figure 3: Generate frame with two frame](./proposal/pic3.jpg)
 
- ![Generate frame with two frame](./proposal/pic3.jpg)
+For the test part, we use 60FPS frames videos to train our model, as shown in Figure 4. Each video in the data set is processed in three sets of frames: t, t+1, t+2, where t is from frame 1 to frame 58. We use the frame t and frame t+2 as input and frame t+1 as ground truth. The output frame is used to compare with the original frame t+1 to train the model.
 
-For the test part, we will use 60fps frames videos to train our model as shown in Figure 4. Each video in the data set will be process in three set of rames:t, t+1, t+2, where t is from 1th frames to 58 frames. We will use the t frame and t+2 frame as input and t+1 frame as ground truth. The output frame will be used to compare with the original t+1 frame to accurately model.
+ ![Figure 4: Compare with the original frame](./proposal/pic2.jpg)
 
- ![Compare with the original frame](./proposal/pic2.jpg)
 
-## How it is related to Deep Learning for CV 
-Traditional methods use optical flow for frame interpolation. However, in general, optical flow cannot be calculated from images with ambiguity (known as the aperture problem[7] in computer vision); additional constraints are needed to find a unique solution. Therefore, the quality of the interpolation heavily depends on the accuracy of the flow estimation. It is important to note that this work implements the work of Niklaus et al.[1]. on Adaptive Separable Convolution, which claims high-quality results on the video frame interpolation task. We design a convolutional neural network to estimate a proper convolutional kernel to synthesize each output pixel in the interpolated images. Instead of implementing optical flow-based interpolation, our method captures both the motion and interpolation coefficients, generates kernel through convolution layers, and synthesizes an intermediate video frame. 
+## How it is related to Deep Learning for Computer Vision 
+Traditional methods use optical flow for frame interpolation. However, in general, optical flow cannot be calculated from images with ambiguity (known as the aperture problem[7] in computer vision); additional constraints are needed to find a unique solution. Therefore, the quality of the interpolation heavily depends on the accuracy of the flow estimation. It is important to note that this work implements the work of Niklaus et al.[1] in Adaptive Separable Convolution, which claims high-quality results on the video frame interpolation task. We design a convolutional neural network to estimate a proper convolutional kernel to synthesize each output pixel in the interpolated images. Instead of implementing optical flow-based interpolation, our method captures both the motion and interpolation coefficients, generates the kernel through convolution layers, and synthesizes an intermediate video frame. 
 
-Our neural network can be trained using widely available video data, which provides a sufficiently large training dataset. The main advantages of our method are: 
+
+Our neural network can be trained using widely available video data which provides a sufficiently large training dataset. The main advantages of our method are: 
 1. It achieves better transformation learning and better results; 
-2. It learns models can learn on their own, while traditional video compression work requires a lot of manual design. 
-However, there is a disadvantage of generating large kernel for each pixel that it requires huge amount of graphics memory.
+2. Traditional video CODEC requires a lot of manual design on algorithms, while our model provides the ability to automatically learn without being explicitly programmed. 
+However, there is a disadvantage of generating a large kernel for each pixel that it requires an enormous amount of graphics memory.
 
+## Steps
 
-## Steps 
-    - research paper 
-    - dataset 
-    - env/demo (implementation) 
-    - results analasys
-There are several steps towards making the project. First, We are going to read some related articles and look into previous works on video frame interpolation. We are currently working on bring tradition video coding algorithms into this project, and adapt them into machine learning algorithms. Then, we can decide which approach we are going to take to prediction inter-frame images.  
-Second, we need to decide which dataset we are going to use to train and test the neural network. Since we plan to convert lower FPS videos to 60FPS or 90FPS, we need to find some native 60FPS and 90 FPS video or corresponding picture frames.  
-In addition, we are going to implement the research method of Niklaus et al. from scratch using Keras library on Ubuntu 18.04 with Anaconda. Also, we will develop a demo for quantitative analysis and generate videos for class presentation.  
-Finally, we will run experiment on our demo against test data, or possibly previous research, such as Sepconv Slomo. Metrics including MSE, PSNR, and SSIM will be used to quantify the results and evaluate the performance. A final report will be conducted to summarize our experience results. 
+There are several steps towards making the project. First, We read some related articles and look into previous works on video frame interpolation. We bring traditional video coding algorithms into this project, and adapt them into machine learning algorithms. Then, we can decide which approach we can take to predict inter-frame images.  
+Second, we need to decide which dataset to be used to train and test the neural network. Since we plan to convert lower FPS videos to 60FPS or 90FPS, we need to find some native 60FPS and 90 FPS video or corresponding picture frames.  
+Meanwhile, we implement the research method of Niklaus et al. from scratch by using Keras library on Ubuntu 18.04 with Anaconda. Also, we output image demos from the prediction model for quantitative analysis and then generate videos for visual comparison and the in-class presentation.  
+Finally, we run an experiment on our predicted frames. The metrics including MSE, PSNR, and SSIM, are used to quantify the results and evaluate the performance. A final report is conducted to summarize our experience results. 
 
 ## Proposed Framework
-We will develop a deep neural network based on the Adaptive Convolution Network of Niklaus et al. As illustrated in Figure ?, the convolution layers will take in two receptive fields, R1 and R2, from two consecutive frames respectively.  
-![Proposed Framework](./proposal/framework.png)
-The convolutional model will be trained to output a kernal K, which will be used with the corresponding patches, P1 and P2,  centered in receptive fields, to compute the output pixel of the interpolated frame I_hat. The formula for computing the output pixel is shown as below:   
+
+
+We develop a deep neural network based on the Adaptive Convolution Network of Niklaus et al. As illustrated in Figure 5 (Niklaus 2017 CVPR), the convolution layers take in two receptive fields, R1 and R2, from two consecutive frames respectively.  
+![Figure 5: Proposed Framework](./proposal/framework.png)
+
+The convolutional model is trained to output a kernel K, which is used with the corresponding patches, P1 and P2,  centered in receptive fields, to compute the interpolated frame's output pixel I_hat. The formula for calculating the output pixel is shown as below:   
 
 ![Formula for computing the interpolation pixel I_hat(x, y)](./proposal/formula0.png)
 
-## Dataset
-We will be training and testing our model using 720p video images from Middlebury dataset as Niklaus et al. and DAIN did. It will allow us to do similar experiment or even comparison if possible. If more data are needed for training, we will download as many 720p video as needed via YouTube.  
+## Convolution Layers
 
-## Schedule
-    - important dates
-For the project schedule, we have planned the following dates and events at this moment. However, schedule may be slightly changed in the future according to the circumstances.
-- April 23 (Thursday): Meeting and review on initial proposal
-- April 27 (Monday): Initial proposal due
-- May 7 (Thursday): Finish reading Chapter 6, 10, and 11 of the textbook. Daniel and Wang should finish reading the DAIN and Sepconv Slomo article and present it to the rest of the group
-- May 7 (Thursday): Meeting on final proposal 
-- May 9 (Saturday): Meeting and review on final proposal
-- May 11 (Monday): Final proposal due
-- May 11 (Monday): Meeting on coding plan
-- May 24 (Sunday): Final code review
-- May 26 (Tuesday): Final report review
-- May 30 (Saturday): Presentation rehearsal
-- June 1 (Monday): Presentation
+As in Figure 6 (Niklaus 2017 CVPR), we use an identical model like the one Niklaus et al. used in their paper. We also use two receptive blocks with size 79 x 79 x 3 combined to 79 x 79 x 6 as input. 
+In each convolution layer, we use ReLu as our activation function, as well as batch normalization to ensure the variances for both input and output nodes are the same. Each convolution layer is paired with a max-pooling layer using a ReLu activation, a 2 x 2 filter, and a 2 x 2 stride. In order to get the final output with 41 x 82 x 1 x 1 size, we finally use a fully connected layer with spatial softmax activation to get the output kernel with size 41 x 82 x 1 x 1.   
 
+
+![Figure 6: Convolution Layers](./proposal/layers.png) 
+
+## Training Environment
+We conduct the training and testing on Ubuntu 18.04 with Anaconda. One Quatro RTX 6000 and two RTX 2070 Super are used to train our model. Because all these graphic cards are RTX series, we can enable the RTX 16-bit optimization which makes our training faster. We implement the model based on Keras. The project also works on Powershell in Windows 10.
+
+## Training and testing dataset
+
+We use the triplet dataset from the Vimeo90K dataset to train our model. Vimeo90K is a large-scale, high-quality video dataset with 89,800 video clips downloaded from vimeo.com. The triplet dataset is extracted from 15K video clips selected from Vimeo-90K. The triplet dataset has 73,171 triplets for training, in which each triplet is a 3-frame sequence with a fixed resolution of 448 x 256 pixels. We train our network to predict the middle frame of each triplet. We also found Depth-Aware Video Frame Interpolation uses this dataset as well. Regarding the training data, we use 2/3 on training and 1/3 on validation.
+
+Regarding the testing data, we use both the triplet dataset and the HEVC dataset. More specifically, for the HEVC dataset, we use BlowingBubbles and BasketballDrill datasets to evaluate our model and synthesize the final 50FPS video. Each of the datasets has 500 frames, and we use 250 of these 500 frames as the test input.
+
+## Training method/configuration 
+In our neural network, we initialize our model parameters by using random initialization and AdaMax optimizer to train the proposed network. For AdaMax optimizer parameters, we set beta1 to 0.9, beta2 to 0.999, and the learning rate to 0.001. We use 128 as the Mini-batch size to minimize the loss function. The maximum epochs number is set to 1000.
+
+We also use EarlyStopping to determine the actual number of epochs in each round of training. We monitor validation loss with 1.0 for Min_delta and 10 epochs for the patience. The program saves the best model weights into an HDF5 file when EarlyStopping is triggered.
+
+Regarding the training method, we transform images into blocks and patches to train the model. Also, we use mini-batch to reduce memory costs and improve training efficiency. Three framesets which contain 9 frames in total are used for training at a time. Since we have generated a block and a patch for every pixel on a frame, the block memory and patch memory come to a high cost, which is about 7.3 GB and 2 GB per frame, then a total 22 GB and 6 GB per set.
 
 ## Experimental Results and Analysis
+
 **Training Result**
 
-During our training it takes about 150 seconds to complete one epoch. And the CNN model we finally get contains 15,842,114 parameters totally.
+During our training, it takes about 150 seconds to complete one epoch. And the CNN model we finally get contains 15,842,114 parameters in total.
 
 | #Parameters (million) | Runtime per Epoch (seconds) |
 | --------------------- | --------------------------- |
 | 15.8                  | 150                         |
 
-When we train our model with the images of the same scene, the training loss continues to decrease within 20 epochs. After a following climbing halted around epoch #40, the training loss decreases again with experience and eventually keeps at a point of stability after epoch #100. The validation loss follows the trend of training loss, but a gap remains between these two curves.
+When we train our model with the images of the same scene, the training loss continues to decrease within 20 epochs. After the following climbing halted around epoch #40, the training loss drops again with experience and eventually keeps at a point of stability after epoch #100. The validation loss follows the trend of training loss, but a gap remains between these two curves.
 
-Regarding the accuracy, both training and validation have the similar ascending trend although there is a stagnancy and small drop between epochs #20 and #50 before they eventually climb to a stable higher level.
+Regarding the accuracy, both training and validation have a similar ascending trend, although there is stagnancy and small drop between epochs #20 and #50 before they eventually climb to a stable higher level.
 
 <img src=".\results\loss_on_same_scene.png" alt="image-loss" style="zoom:90%;" /> <img src=".\results\acc_on_same_scene.png" alt="image-acc" style="zoom: 90%;" />
 
-Figure XX: (a) The training loss and validation loss show the training set maybe is small relative to the validation dataset.
+Figure 7: (a) The training loss and validation loss show the training set maybe is small relative to the validation dataset.
 
 ​                   (b) The training accuracy and validation accuracy shows a fair good performance
 
 
 
-When we train our model with the images of different scenes, the training loss continues to decrease within the epochs in which the images are from same scenes. But the loss will jump sharply when the epoch switches to the images from different scenes. Such a phenomena is called catastrophic forgetting because the change of the training data is so significant that the model has to forget previous experience to fit the new data. However, the validation loss has a pretty much smooth trace without sharp jumping during its descending. 
+When we train our model with the images of different scenes, the training loss continues to decrease within the epochs in which the images are from the same scenes. But the loss value will jump sharply when the epoch switches to the images from different scenes. Such a phenomenon is called catastrophic forgetting because the change of the training data is so significant that the model has to forget previous experience to fit the new data. However, the validation loss has a pretty much smooth trace without sharp jumping during its descending. 
 
 The training accuracy steps down in the first about 100 epochs but quickly rebounds and stays at a much higher level. Though the validation accuracy steadily climbs to the plateau and gets stable after epoch #110.
 
@@ -116,7 +114,7 @@ The training accuracy steps down in the first about 100 epochs but quickly rebou
 
 <img src=".\results\acc_on_diff_scene.png" alt="image-20200606135119012" style="zoom: 90%;" />
 
-Figure XX: (a) The training loss has sharp jump while the training data change significantly. It indicates that the training set maybe is small relative to the validation dataset.             
+Figure 8: (a) The training loss has sharp jump while the training data change significantly. It indicates that the training set maybe is small relative to the validation dataset.             
 
 ​                   (b) The validation loss shows a relative smooth descending trend.
 
@@ -126,18 +124,18 @@ Figure XX: (a) The training loss has sharp jump while the training data change s
 
 **Testing Result**
 
-We test our model with Vimeo triplet sets and HEVC data. The table below shows the metrics of MSE, PSNR and SSIM we got when testing with 100 Vimeo triplet sets which are respectively from the same scene and different scenes.
+We test our model with Vimeo triplet sets and HEVC data. The table below shows the metrics of MSE, PSNR, and SSIM we got when testing with 100 Vimeo triplet sets which are respectively from the same scene and different scenes.
 
 | 100 Vimeo Triplet Sets | MSE     | PSNR    | SSIM   |
 | ---------------------- | ------- | ------- | ------ |
 | **Same Scene**         | 51.3136 | 18.0673 | 0.6097 |
 | **Different Scenes**   | 36.9612 | 21.7903 | 0.7966 |
 
-The images below show the interpolated frames generated by our method. The upper right image is the interpolated frame based on the frames from the same scene and the upper left is the ground truth for it. The lower right one is the interpolated frame based on the frames from different scene and the lower left is the ground truth for it. As shown in the metric table above and the visual comparison below, the interpolation based on images of different scene gives a better outcome.
+The images below show the interpolated frames generated by our method. The top right image is the interpolated frame based on the frames from the same scene, and the upper left is the ground truth for it. The lower right one is the interpolated frame based on the frames from different scenes, and the lower left is the ground truth for it. As shown in the metric table above and the visual comparison below, the interpolation based on images of the different scene gives a better outcome.
 
 <img src=".\results\origin_same_scene.png" alt="img" style="zoom:90%;" />    <img src=".\results\interpolated_same_scene.png" alt="img" style="zoom:90%;" />
 
-Figure XX  (a)  ground truth and the interpolated frame based on images from the same scene
+Figure 9  (a)  ground truth and the interpolated frame based on images from the same scene
 
 <img src=".\results\origin_diff_scene.png" alt="img" style="zoom:90%;" />  <img src=".\results\interpolated_diff_scene.png" alt="img" style="zoom:90%;" />
 
@@ -145,20 +143,30 @@ Figure XX  (a)  ground truth and the interpolated frame based on images from the
 
 ## Discussion  
 ### Issues we could avoid  
-As mentioned previously in training, intensive RAM consumption is a huge challenge to our training process, since each consecutive images set (3 frames in total) could take 9GB RAM memory. Therefore, our method only takes in 3 sets of images at a time, and switches to new images sets in the next training section. However, this could lead to an issue called Catastrophic Forgetting, also known as Catastrophic Interference, in Machine Learning. It generally happens when new data is feeded to train the model, while the data differs significantly from previous one. The issue arises because as the CNN model is trained by more data, the model will learn new data quickly and fit them into model faster than before. In the meantime, the model may forget what it has learnt before.
+As mentioned previously, during the training, the intensive RAM consumption is a huge challenge to our training process, since each consecutive images set (3 frames in total) could take 9GB RAM memory. Therefore, our method only takes in 3 sets of images at a time, and switches to new images sets in the next training section. However, this could lead to an issue called Catastrophic Forgetting, also known as Catastrophic Interference, in Machine Learning. It generally happens when new data is fed to train the model, while the data differs significantly from the previous one. The issue arises because as the CNN model is trained by more data, the model will learn new data quickly and fit them into the model faster than before. In the meantime, the model may forget what it has learnt before.
 
-Unfortunately, we could avoid this issue at beginning by simply pre-processing the training data. Intead of input 3 sets of images at each time, we could fetch slices of images from different images sets (from different scenes), so the input data could be diversified. 
+Unfortunately, we could have avoided this issue at the beginning by simply pre-processing the training data. Instead of feeding 3 sets of images at each time, we could fetch slices of images from different image sets (from different scenes) so that the input data could be diversified. 
 
-### Possible Improvement  
-#### Niklaus's later research
-Niklaus et al. have proposed a new method in their later research to optimize the memmory consumption. As shown in Figure ?, first, instead of generating a 2-D kernel for each pixel, their new network produces four 1-D kernels for each pixel.   
+### Possible Improvement
 
-![New framework in Video Frame Interpolation via Adaptive Separable Convolution](./proposal/niklaus_framework2.png)   
+- More training data  
+  In this project, we perform 7 rounds of training; for each round, 3 sets of images from different scenes are used. In future research, more data and scenes can be applied to model training.
+  Moreover, we set the patience as 10, which means the training will be terminated if there is no enough improvement in the monitored validation loss within 10 epochs. This model might not be ideal since it goes up or down from one epoch to the next. However, what we care about is that the overall trend is improving, so higher patience value could boost the accuracy of the model, which can be conducted in future training.
 
-This method is improved by reducing the dimension of the kernel, from one 2-dimension matrix K to two 1-dimension vectors, kh and kv, where they can be used to estimate K. Similar to Formular ?, kh and kv could be re-written as k1,h, k2,h and k1,v,  k2,v respectively. 
-Since we can rewrite the original formular to calculate I(x, y) to Formular ?, the formular to estimate kernal K is Formular ?. In conclusion, the space complexity of each kernel will be reduced from O(n^2) to O(2n).
+- Xavier initialization  
+  Xavier initialization is a method to ensure the variance of both input and output to be the same. The variance of the activation value in training decreases layer by layer, causing the gradient in backpropagation to fall layer by layer. To solve the gradient's disappearance, it is necessary to avoid the reduction of the variance of model weights. An ideal situation is that the output value of each layer maintains a Gaussian distribution. Therefore, the basic idea of Xavier initialization is to keep the variance of the input and output consistent, so as to avoid all output values tending to zero.
 
-  
+### Niklaus's later research
+
+
+Niklaus et al. have proposed a new method in their later research to optimize the memory consumption. As shown in Figure 10 (Niklaus 2017 ICCV), instead of generating a 2-D kernel for each pixel, their new network produces four 1-D kernels for each pixel.   
+
+
+![Figure 10: New framework in Video Frame Interpolation via Adaptive Separable Convolution](./proposal/niklaus_framework2.png)   
+
+This method is improved by reducing the dimension of the kernel, from one 2-dimension matrix K to two 1-dimension vectors, kh and kv, where they can be used to estimate matrix K. Similar to Formula ?, kh and kv could be rewritten as k1,h, k2,h and k1,v,  k2,v respectively. 
+Since we can rewrite the original formula to calculate I(x, y) to Formula ?, the formula to estimate kernel K is Formula ?. In conclusion, each kernel's space complexity will be reduced from O(n^2) to O(2n).
+
 ![Re-written Formular](./proposal/formula1.png)  
 ![Kernel Estimation](./proposal/formula3.png)  
 
@@ -171,3 +179,5 @@ Since we can rewrite the original formular to calculate I(x, y) to Formular ?, t
 - Niklaus, S., Mai, L., & Liu, F. (2017). Video frame interpolation via adaptive convolution. In IEEE Conference on Computer Vision and Pattern Recognition (pp. 670-679).
 - Niklaus, S., Mai, L., & Liu, F. (2017). Video frame interpolation via adaptive separable convolution. In IEEE International Conference on Computer Vision (pp. 261-270).
 - What Is The Soap Opera Effect? - Everything You Need To Know. (2019, June 10). Retrieved April 26, 2020, from https://www.displayninja.com/what-is-the-soap-opera-effect/.
+
+
