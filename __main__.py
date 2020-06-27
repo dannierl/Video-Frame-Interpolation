@@ -15,7 +15,7 @@ if __name__ == "__main__":
     val_image = helper.load_imgs(val_data_path, 0, 500)
 
     step = 10
-    for i in range(10, 500 - step, 10):
+    for i in range(60, 500 - step, 10):
         print("\n__________________________________________________________________________________________________")
         print("Train on ", i, " | ", "Validate on ", i + step)
         model = adaConv()
